@@ -129,6 +129,11 @@ export default defineConfig({
           { text: '矩阵论与数值分析', link: '/ai/ml1' },
           { text: '概率论与数理统计', link: '/ai/dl' }
         ]
+      },
+      {
+        text: '代码语言', items: [
+          { text: 'C/C++', link: '/ai/ml2' },
+        ]
       }
     ],
     //sidebar: { "/frount-end/机器学习": set_sidebar("frount-end/机器学习") },
