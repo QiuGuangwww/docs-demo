@@ -7,11 +7,11 @@ hero:
   text: "简单的小破笔记"
   tagline: 老师教教我啊我学不会QAQ
   image:
-    src: https://s21.ax1x.com/2025/03/15/pEawWNT.png
+    src: https://s21.ax1x.com/2025/03/15/pEar0Zn.png
     alt: 背景图片
   actions:
     - theme: brand
-      text: Markdown 示例
+      text: 网站简介 
       link: /markdown-examples
     - theme: alt
       text:   B站主页
