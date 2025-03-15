@@ -40,13 +40,19 @@ jobs:
         run: pnpm install # 安装依赖
       - name: Build with VitePress
         run: |
-          pnpm run docs:build # 启动项目
+          echo "开始使用VitePress构建项目..."
+          pnpm run docs:build
+          echo "项目构建完成，开始检查构建产物目录状态..."
+          # 打印构建产物目录的大小（以字节为单位）
+          du -sb .vitepress/dist
+          # 打印构建产物目录下的文件数量
+          find .vitepress/dist -type f | wc -l
+          ls -la .vitepress/dist # 打印构建产物目录内容，检查是否有文件生成
           touch .nojekyll  # 通知githubpages不要使用Jekyll处理这个站点，不知道为啥不生效，就手动搞了
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3  # 上传构建产物
+        uses: actions/upload-pages-artifact@v3  # 确保使用正确版本
         with:
           path: .vitepress/dist # 指定上传的路径，当前是根目录，如果是docs需要加docs/的前缀
-
   # 部署工作
   deploy:
     environment:
