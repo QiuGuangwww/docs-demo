@@ -1,9 +1,3 @@
----
-head:
-  - - link
-    - rel: stylesheet
-      href: https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.5.1/katex.min.css
----
 # 机器学习笔记
 ## 一. 模型评估和选择
 
