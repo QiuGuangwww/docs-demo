@@ -325,4 +325,136 @@ char str[20];
 
 **字符串String类型：** C语言并无内置string类型，等到C++笔记再进行讨论。
 
-**字符串处理函数：**
+**字符串处理函数：**  
+#### 2.3.1.字符串长度计算：strlen  
+* **功能：** 计算字符串的长度，即字符串中字符的个数。返回字符串的长度，格式为size_t。
+:::warning
+**strlen**得到的字符个数不包括字符串结束符`\0`
+:::
+示例代码：  
+```c
+char str[] = "Hello, World!";
+size_t len = strlen(str);
+printf("字符串的长度是: %zu\n", len);//%zu是size_t的输出符，实际上，用%d也是可以的，也更符合常识。
+```
+#### 2.3.2.字符串复制：strcpy与strncpy
+* （1）**strcpy**
+* **功能：** 将一个字符串复制到另一个字符数组中。返回值是一个指向目标字符数组的指针。  
+:::info
+原字符串 `dest` 末尾的 `'\0'` 会被覆盖，当 `src` 字符串复制完成后，`strcat` 会在新字符串的末尾添加一个 `'\0'`，以此来表示新字符串的结束。
+:::
+示例代码：
+```c
+char src[] = "Hello";
+char dest[10];
+strcpy(dest, src);
+printf("复制后的字符串: %s\n", dest);//%s是用于处理字符串的
+```   
+
+* （2）**strncpy**
+* **功能：** 将源字符串的前 `n` 个字符复制到目标字符数组中。 返回指向目标字符数组的指针。 
+:::warning
+如果源字符串的长度小于 `n`，则在目标字符数组后面填充 `\0` 直到达到 `n` 个字符；如果源字符串的长度大于等于 `n`，则不会自动添加 `\0`。注意不要越界！
+:::
+示例代码：
+```c
+char src[] = "Hello";
+char dest[3];
+strncpy(dest, src, 2);
+dest[2] = '\0';  // 手动添加字符串结束符
+printf("复制后的字符串: %s\n", dest);
+```
+#### 2.3.3.字符串连接：strcat与strncat
+* （1）**strcat**
+* **功能：** 将一个字符串连接到另一个字符串的末尾。返回指向目标字符数组的指针。 
+示例代码：
+```c
+char dest[20] = "Hello, ";
+char src[] = "World!";
+strcat(dest, src);
+printf("连接后的字符串: %s\n", dest);
+```
+
+* （2）**strncat**
+* **功能：** 将源字符串的前 `n` 个字符连接到目标字符数组的末尾。 返回指向目标字符数组的指针。 
+:::warning
+连接后会自动在结果字符串末尾添加 `'\0'`。
+:::
+示例代码：
+```c
+char dest[20] = "Hello, ";
+char src[] = "World!";
+strncat(dest, src, 3);
+printf("连接后的字符串: %s\n", dest);
+```
+####  2.3.4.字符串比较：strcmp与 strncmp
+* （1）**strcmp**
+* **功能：** 比较两个字符串的大小($ASC2$)。如果 `s1` 小于 `s2`，返回一个负整数；如果 `s1` 等于 `s2`，返回 0；如果 `s1` 大于 `s2`，返回一个正整数。（返回值通常是两个不同字符的$ASC2$码值之差）
+:::tip
+这个函数是逐个字符比较，只要遇到相同位置返回值不为0的就不会继续比较。
+:::
+示例代码：
+```c
+char str1[] = "apple";
+char str2[] = "banana";
+int result = strcmp(str1, str2);
+if (result < 0) {
+    printf("%s 小于 %s\n", str1, str2);
+} else if (result == 0) {
+    printf("%s 等于 %s\n", str1, str2);
+} else {
+    printf("%s 大于 %s\n", str1, str2);
+}//比较首字母a和b即可以得到apple<banana
+```
+
+* （2）**strncmp**
+* **功能：** 比较两个字符串的前 `n` 个字符的大小。 与 `strcmp` 类似，根据前 `n` 个字符的比较结果返回相应的值。
+示例代码：
+```c
+char str1[] = "apple";
+char str2[] = "applet";
+int result = strncmp(str1, str2, 3);
+if (result == 0) {
+    printf("前 3 个字符相等\n");
+}
+```
+
+#### 2.3.5.字符串查找：strchr与strstr
+* （1）**strchr**
+* **功能：** 在字符串中查找指定 **字符** 第一次出现的位置。如果找到，返回指向该字符的指针；如果未找到，返回 `NULL`。
+示例代码：
+```c
+char str[] = "Hello, World!";
+char *pos = strchr(str, 'o');
+if (pos != NULL) {
+    printf("字符 'o' 第一次出现的位置是: %ld\n", pos - str);
+} else {
+    printf("未找到字符 'o'\n");
+}
+```
+
+* （2）**strstr**
+* **功能：**在字符串中查找指定子字符串第一次出现的位置。如果找到，返回指向子字符串的指针；如果未找到，返回 `NULL`。
+示例代码：
+```c
+char str[] = "Hello,World!";
+char *sub_str = "World";
+char *pos = strstr(str, sub_str);
+if (pos != NULL) {
+    printf("子字符串 '%s' 第一次出现的位置是: %ld\n", sub_str, pos - str);
+} else {
+    printf("未找到子字符串 '%s'\n", sub_str);
+}
+```
+#### 2.3.6.字符串分割：strtok
+* **功能：** 将字符串按指定的分隔符进行分割。返回分割出的子字符串的指针，如果没有更多的子字符串，返回 `NULL`。
+示例代码：
+```c
+char str[] = "Hello,World,How,Are,You";
+char *token = strtok(str, ",");//*是指针运算符，在后面会提到
+while (token != NULL) {
+    printf("%s\n", token);
+    token = strtok(NULL, ",");
+}
+```
+## 3.函数
