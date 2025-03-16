@@ -642,7 +642,7 @@ int factorial(int n) {
 ```
 这就是递归的魅力。
 
-**例题【[# P1255 数楼梯](https://www.luogu.com.cn/problem/P1255)】**
+**例题【[# P1255 数楼梯](https://www.luogu.com.cn/problem/P1255)】**  
 此题主要是一个递归的思想，语言并不重要，由于用c实现需要高精度的知识，下面用Python解决：
 ```python
 n = int(input())
