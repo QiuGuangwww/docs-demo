@@ -133,6 +133,7 @@ export default defineConfig({
       {
         text: '代码语言', items: [
           { text: 'C/C++', link: '/frount-end/C/C++' },
+          { text: '数据结构与算法', link: '/frount-end/数据结构与算法' }
         ]
       }
     ],
