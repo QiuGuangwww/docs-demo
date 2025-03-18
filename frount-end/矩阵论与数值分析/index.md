@@ -1040,13 +1040,13 @@ A = \left[ \begin{array}{cccc}
 $$
 
 
-##### 2.Cholesky分解
-(1) 对 $A$ 进行 Doolittle 分解 $A=LU$;
-(2) 选取 $U$ 的对角线元素 $d_1, d_2, \cdots, d_n$;
-(3) 令 $G=L \cdot \text{diag}(\sqrt{d_1}, \sqrt{d_2}, \cdots, \sqrt{d_n})$;
-(4) 写出 Cholesky 分解：$A=GG^T$.
+##### 2.Cholesky分解  
+(1) 对 $A$ 进行 Doolittle 分解 $A=LU$;  
+(2) 选取 $U$ 的对角线元素 $d_1, d_2, \cdots, d_n$;  
+(3) 令 $G=L \cdot \text{diag}(\sqrt{d_1}, \sqrt{d_2}, \cdots, \sqrt{d_n})$;  
+(4) 写出 Cholesky 分解：$A=GG^T$.  
 
-例 1.3.4 求矩阵 $A=\begin{bmatrix} 5 & -2 & 0 \\ -2 & 3 & -1 \\ 0 & -1 & 1 \end{bmatrix}$ 的 Cholesky 分解和推广 Cholesky 分解。
+**例** 求矩阵 $A=\begin{bmatrix} 5 & -2 & 0 \\ -2 & 3 & -1 \\ 0 & -1 & 1 \end{bmatrix}$ 的 Cholesky 分解和推广 Cholesky 分解。
 
 解 $A=\begin{bmatrix} 5 & -2 & 0 \\ -2 & 3 & -1 \\ 0 & -1 & 1 \end{bmatrix} \sim \begin{bmatrix} 5 & -2 & 0 \\ -\frac{2}{5} & \frac{11}{5} & -1 \\ 0 & -\frac{5}{11} & \frac{6}{11} \end{bmatrix}$
 
