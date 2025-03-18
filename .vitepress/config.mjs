@@ -126,7 +126,8 @@ export default defineConfig({
       },
       {
         text: '数学', items: [
-          { text: '矩阵论与数值分析', link: '/ai/ml1' },
+          //{ text: '高等数学', link: '/frount-end/高等数学' },
+          { text: '矩阵论与数值分析', link: '/frount-end/矩阵论与数值分析' },
           { text: '概率论与数理统计', link: '/ai/dl' }
         ]
       },
