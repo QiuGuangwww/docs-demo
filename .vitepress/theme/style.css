@@ -157,7 +157,7 @@
   }
 }
 .aside-container {
-  position: fixed;
+  position: sticky !important;
   top: 0;
   padding-top: calc(
     var(--vp-nav-height) + var(--vp-layout-top-height, 0px) +

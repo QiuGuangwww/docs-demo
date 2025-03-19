@@ -1124,3 +1124,994 @@ int main() {
 :::
 
 ## 5.结构体
+### 5.1 结构体的定义和操作
+#### 5.1.1定义结构体及结构体变量
+- （1）定义结构体类型的时候同时定义变量：  
+```c
+struct 结构体类型名{    //其中struct为关键字
+	成员表;			//可以有多个成员
+	成员函数;		//可以有多个函数，也可以没有
+}结构体变量;			//可以同时定义多个结构体变量，用“，”隔开  
+//例如：
+struct student{
+	char name;
+	int chinese,math;
+	int total;
+}a[110]; 		//	同时定义了a数组变量
+```
+- （2）先定义结构体再定义结构体变量：  
+```c
+struct 结构体类型名{
+	成员表;
+	成员函数;
+}；
+结构体名 结构体变量表		//可以同时定义多个结构体变量
+//例如：
+struct student{
+	char name;
+	int chinese,math;
+	int total;
+};
+student a[110];
+```
+:::tip 注意
+在定义结构体变量时，结构体变量名与结构体名不能相同，在定义结构体时，系统对其不分配实际内存。只有定义结构体变量时，系统才为其分配内存。
+:::
+#### 5.1.2 结构体变量的特点
+- （1）结构体变量可以整体操作，例如：
+ ```c
+swap(a[j],a[j+1]);
+```
+- （2）结构体变量的成员访问也很方便，清晰，例如：
+:::code-group
+```C
+scanf("%s",&a[i].name);
+```
+```C++
+cin>>a[i].name;
+```
+:::
+
+- （3）结构体变量的初始化和数组的初始化类似，例如：
+```c
+student op={"yuanshen",60,80,100};
+```
+#### 5.1.3 成员调用
+结构体变量与各个成员之间的引用形式一般为：
+```c
+	结构体变量名.成员名
+```
+对于上面定义的结构体变量，我们可以这样操作：
+:::code-group
+```C
+scanf("%s",a[i].name);
+a[i].total=a[i].chinese+a[i].math;
+```
+```C++
+cin>>a[i].name;
+a[i].total=a[i].chinese+a[i].math;
+```
+:::
+实际上结构体成员的操作与该成员类型所具有的操作是一致的。  
+成员运算符“$.$”在存取成员数值时使用，其优先性最高，有左结合性。在处理**包含结构体的结构体**时，可记作：
+```c
+strua.strub.membb;
+```
+这说明结构体变量srtua有结构体成员strub，结构体变量strub有成员membb。
+#### 5.1.4 成员函数调用
+结构体成员函数调用的一般形式为：
+```c
+	结构体变量名.成员函数;
+```
+结构体成员函数默认将结构体变量作为引用参数。  
+
+### 5.2 结构体与指针
+#### 5.2.1 结构体指针的定义与使用
+当一个指针变量指向一个结构体变量时，称之为结构体指针变量。  
+结构体指针变量的值是所指向的结构体变量的起始地址。通过结构体指针即可访问结构体变量——这与数组指针和函数指针的情况是相同的。  
+结构体指针变量定义的一般形式：  
+```c
+结构体名 *结构体指针变量名
+```
+当然也可以在定义结构体的同时定义这个结构体指针变量。  
+**例**
+:::code-group
+```c[写法1]
+struct student{
+	char name[20];
+	char sex;
+	float score;
+}*p;
+```
+```c[写法2]
+struct student{
+	char name[20];
+	char sex;
+	float score;
+};
+student *p;
+```
+与前面讨论的各类指针变量相同，结构体指针变量也需要赋值后才能使用，赋值是把结构体变量的首地址赋予该变量，不能把结构体名赋予该指针变量。  
+**例如：** 如果p是被定义为student类型的结构体变量，boy是被定义为student类型的结构体变量，则：`p=&boy`是正确的，而`p=&student`是错误的！  
+引入结构体指针变量指向的结构体变量的成员的方法如下：   
+- 指针名->成员名
+- (*指针名).成员名
+
+::: info 示例
+(*p).score与p->score是等价的
+:::
+
+#### 5.2.2 自引用结构
+在一个结构体内部包含一个类型为结构体本身的成员是否合法呢？
+```c
+struct stu{
+	char name[20];
+	int age,score;
+	stu p;
+};
+```
+**注意：像上面这种自引用是非法的！这类似于一种无穷递归。**    
+但是像下面这种自引用是合法的：
+```c
+struct stu{
+	char name[20];
+	int age,score;
+	stu *p;
+};
+```
+这种声明和上面的不同之处在于现在的p是一个指针，而不是结构体。编译器在结构体的长度之前就已经知道指针的长度，所以这种类型的自引用当然是合法的。  
+这种自引用是实现其他一些结构的基础。自引用在动态数据结构中有重要的应用，甚至可以说，自引用结构是C/C++实现动态数据结构的基石。包括动态的链表，堆，栈，树，无不是自引用的具体实现。
+
+## 6.C语言课后作业题
+### 6.1 数据类型、运算符与表达式
+#### 6.1.1 计算平均值
+**【问题描述】**   
+从键盘输入三个整数，分别存入x,y,z三个整型变量中，计算并输出三个数的和以及平均值。  
+**【输入形式】**   
+从键盘输入三个整数，整数之间以空格隔开。  
+**【输出形式】**   
+在屏幕上分两行显示结果：  
+第一行为三个数的和，整数形式输出；  
+第二行为三个数的平均值，浮点数形式输出，小数点后保留两位小数。
+::: details 答案
+```c
+#include <stdio.h>
+int main(){
+int x, y, z;
+int sum;
+double average;
+scanf("%d%d%d", &x, &y, &z);
+sum = x + y + z;
+average = (double)sum / 3;
+printf("%d\n", sum);
+printf("%.2f", average);
+return 0;
+}
+```
+ :::
+#### 6.1.2 求三角形面积
+**【问题描述】**  
+若已知三角形三个边的长度分别为a,b,c（并假设三个边长度的单位一致，在本编程题中忽略其单位），则可以利用公式:  
+$$
+S=\sqrt{s(s - a)(s - b)(s - c)}
+$$
+求得三角形的面积，其中：$s=\frac{(a+b+c)}{2}$。编程实现从控制台读入以整数表示的三个边的长度（假设输入的长度肯定可以形成三角形），然后利用上述公式计算面积并输出，结果小数点后保留3位有效数字。  
+**【输入形式】**  
+从控制台输入三个整数表示三角形三个边的长度，以空格分隔三个整数。  
+**【输出形式】**  
+向控制台输出求得的三角形的面积，小数点后保留三位有效数字。
+::: details 答案
+```c
+#include <stdio.h>
+#include <math.h>
+int main(){
+int a,b,c;
+double s,area;
+scanf("%d%d%d",&a,&b,&c);
+s=(a+b+c)/2.0;
+area=sqrt(s*(s-a)*(s-b)*(s-c));
+printf("%.3f",area);
+}
+```
+ :::
+#### 6.1.3 摄氏华氏温度转换
+**【问题描述】**  
+假如用C表示摄氏温度，F表示华氏温度，则有：$F = C\times\frac{9}{5}+32$。输入一整数表示摄氏温度，根据该公式编程求对应的华氏温度，结果小数点后保留一位有效数字。   
+**【输入形式】**  
+从控制台读入一个整数，表示摄氏温度。   
+**【输出形式】**   
+向控制台输出转换后的华氏温度，结果小数点后保留一位有效数字。 
+::: details 答案
+```c
+#include <stdio.h>
+int main(){
+int C;
+float F;
+scanf("%d",&C);
+F=C*9.0/5.0+32.0; //注意浮点数运算！不要写成整数了 // [!code warning]
+printf("%.1f",F);
+return 0;
+}
+```
+ :::
+#### 6.1.4 前驱、后继字符
+**【问题描述】**  
+从键盘输入一个字符，求出它的前驱和后继字符（按照ASCII码值排序），并按照从小到大的顺序输出这三个字符和对应的ASCII值。  
+**【输入形式】**  
+从键盘输入一个字符  
+**【输出形式】**  
+按两行输出：  
+第一行按照从小到大的顺序输出这三个字符，并以一个空格隔开；  
+第二行按照从小到大的顺序输出三个字符对应的ASCII值，并以一个空格隔开。
+::: details 答案
+```c
+#include <stdio.h>
+int main(){
+char ch;
+scanf("%c", &ch);
+printf("%c %c %c\n", ch-1, ch, ch+1);
+printf("%d %d %d", ch-1, ch, ch+1);//这样可以直接输出ASCII码 // [!code warning]
+return 0;
+}
+```
+ :::
+
+ ### 6.2 流程控制
+#### 6.2.1    找最大最小整数
+**【问题描述】**      
+编写一个程序，用户输入若干整数，试找出其中的最大数和最小数。    
+**【输入形式】**    
+用户在第一行待输入数据个数，在第二行输入数据。     
+**【输出形式】**     
+程序在下一行输出数据的最大值和最小值    
+::: details 答案
+```c
+#include <stdio.h>
+int main(){
+	int n, a[n + 5], i;
+	scanf("%d", &n);
+	for (i = 0; i < n; i++){
+		scanf("%d", &a[i]);
+	}
+	int max = 0, min = 1000000;
+	for (i = 0; i < n; i++){
+		if (a[i] > max){
+		max = a[i];
+		}
+		if (a[i] < min){
+		min = a[i];
+		}
+	}
+	printf("%d %d", max, min);
+	return 0;
+}
+```
+ :::
+
+#### 6.2.2    工资
+**【问题描述】**    
+假设税前工资和税率如下（s代表税前工资，t代表税率）：    
+s<1000  t=0%    
+1000<=s<2000 t=10%    
+2000<=s<3000 t=15%    
+3000<=s<4000 t=20%    
+4000<=s t=25%    
+编写一程序，要求用户输入税前工资额，然后用switch语句计算税后工资额。    
+**【输入形式】**    
+从键盘输入税前工资s，可以是浮点数。    
+**【输出形式】**    
+输出税后工资额，保留小数后两位。  
+::: details 答案
+```c
+#include <stdio.h>
+#include <stdlib.h>
+int main(){
+    float s;
+    scanf("%f", &s);
+    int category;
+    if (s < 1000){category = 0;}
+    else if (s < 2000){category = 1;}
+    else if (s < 3000){category = 2;}
+    else if (s < 4000){category = 3;}
+    else{category = 4;}
+    float taxRate;
+    switch (category){
+    case 0:
+        taxRate = 0;
+        break;
+    case 1:
+        taxRate = 0.1;
+        break;
+    case 2:
+        taxRate = 0.15;
+        break;
+    case 3:
+        taxRate = 0.2;
+        break;
+    case 4:
+        taxRate = 0.25;
+        break;
+    default:
+        break;
+    }
+    float afterTaxSalary = s * (1 - taxRate);
+    printf("%.2f\n", afterTaxSalary);
+    return 0;
+}
+```
+ :::
+
+#### 6.2.3 求和
+**【问题描述】**  
+编写一个程序，求s=1+(1+2)+(1+2+3)+...+(1+2+3+...+n)。    
+**【输入形式】**    
+输入一个正整数n，根据求s公式计算s并输出。    
+**【输出形式】**    
+输出的为s的结果。   
+::: details 答案
+```c
+#include <stdio.h>
+#include <stdlib.h>
+int sum(n){
+    return n * (n + 1) / 2;
+}
+int main(){
+    int n, s = 0, i;
+    scanf("%d", &n);
+    for (i = 1; i <= n; i++){
+        s += sum(i);
+    }
+    printf("%d", s);
+    return 0;
+}
+```
+ :::
+ 
+ #### 6.2.4 简易计算器
+ **【问题描述】**  
+编程实现简易的计算器：读入两个整数运算数(data1和data2)及一个运算符(op)，计算表达式data1 op data2的值，其中op可以是+,-,$*$,/。  
+ **【输入形式】**   
+控制台输入运算数和运算符:    
+1.首先输入以空格分隔的两个整数，分别是data1和data2；    
+2.输入一个字符作为运算符op，op可以是'+'，'-'，'$*$'，'/'。    
+输入时，data1、data2、op之间各留有一个空格。具体格式见样例输入。  
+ **【输出形式】**   
+控制台输出运算结果。作除法运算时，若能够整除，则输出为整数，否则输出结果小数点后应保留两位有效数字。   
+::: details 答案
+```c
+#include <stdio.h>
+#include <stdlib.h>
+int main(){
+    int data1, data2;
+    char op;
+    scanf("%d %d %c", &data1, &data2, &op);
+    switch (op){
+    case '+':
+        printf("%d", data1 + data2);
+        break;
+    case '-':
+        printf("%d", data1 - data2);
+        break;
+    case '*':
+        printf("%d", data1 * data2);
+        break;
+    case '/':
+        if (data1 % data2 == 0){
+            printf("%d", data1 / data2);
+        }
+        else{
+            printf("%.2f", (float)data1 / data2);
+        }
+        break;
+    default:
+        break;
+    }
+    return 0;
+}
+```
+ :::
+
+ #### 6.2.5 同构数
+  **【问题描述】**  
+具有下面性质的数a称为"同构数"：设b是a的平方，a与b的低若干位相同。例如，5是25的同构数,25是625的同构数.编程序满足如下要求:    
+输入两个整数a,b (0<=a, b<=99),找出a、b之间全部的同构数。    
+ **【输入形式】**  
+控制台输入0-99之间的两个整数a和b.    
+ **【输出形式】**   
+控制台上按照由小到大的顺序输出所有同构数.每一个整数占一行.    
+:::details 答案
+```c
+#include <stdio.h>
+#include <stdlib.h>
+int main()
+{
+    int a, b, num, square;
+    scanf("%d %d", &a, &b);
+    for (num = a; num <= b; num++)
+    {
+        square = num * num;
+        if (num < 10)
+        {
+            if (square % 10 == num)
+            {
+                printf("%d\n", num);
+            }
+        }
+        else
+        {
+            if (square % 100 == num)
+            {
+                printf("%d\n", num);
+            }
+        }
+    }
+    return 0;
+} 
+```
+:::
+
+ #### 6.2.6 求水仙花数
+ **【问题描述】**  
+编写一个程序，输入一个正整数N(N大于等于100小于等于999)，求出100~N之间的所有水仙花数。所谓 的水仙花数是：如果一个三位数的个位数、十位数、百位数的立方和等于该数自身，就称这个数为水仙花数。    
+ **【输入形式】**   
+输入一个正整数N。    
+ **【输出形式】**   
+输出从100到N之间的所有水仙花数，每个数以回车结束。   
+:::details 答案
+```c
+#include <stdio.h>
+int main()
+{
+    int N, num, hundreds, tens, units;
+    scanf("%d", &N);
+    for (num = 100; num <= N; num++)
+    {
+        hundreds = num / 100;
+        tens = (num % 100) / 10;
+        units = num % 10;
+        if (hundreds * hundreds * hundreds + tens * tens * tens + units * units * units == num)
+        {
+            printf("%d\n", num);
+        }
+    }
+    return 0;
+}
+```
+:::
+
+ #### 6.2.7 整数求和
+**【问题描述】**    
+输入2个正整数a和n，求a+aa+aaa+...+aa...a（n个a）。不考虑整数溢出情况。  
+**【输入形式】**   
+从标准输入中读入两个以空格分隔的正整数（大于等于1，小于等于9）。  
+**【输出形式】**   
+在标准输出中输出整数相加式及结果和。运算符（+, =）与整数之间用一个空格分隔。   
+:::details 答案
+```c
+#include <stdio.h>
+int main()
+{
+    int a, n, i, temp, result = 0;
+    scanf("%d %d", &a, &n);
+    printf("%d", a);
+    temp = a;
+    result = a;
+    for (i = 1; i < n; i++)
+    {
+        temp = temp * 10 + a;
+        printf(" + %d", temp);
+        result += temp;
+    }
+    printf(" = %d", result);
+    return 0;
+}
+```
+:::
+
+
+ #### 6.2.8 求A,B
+ **【问题描述】**   
+输入三位数字N，求两位数AB（其中个位数字为B，十位数字为A，且有0 < A < B &le;9）。使得下列等式成立：    
+AB x BA = N    
+其中BA是把AB中个、十位数字交换所得的两位数。     
+编写程序，接收控制台输入的三位整数N，求解A，B并输出。    
+如果没有解则输出"No Answer"。    
+ **【输入形式】**     
+从键盘输入整数N。     
+ **【输出形式】**   
+输出只有一行，包含两个数字A和B。输出时两个数字紧密输出，不使用其它字符进行分隔。   
+:::details 答案
+```c
+#include <stdio.h>
+int main()
+{
+    int N, A, B, num1, num2, found = 0;
+    scanf("%d", &N);
+    for (A = 1; A < 9; A++)
+    {
+        for (B = A + 1; B < 10; B++)
+        {
+            num1 = 10 * A + B;
+            num2 = 10 * B + A;
+            if (num1 * num2 == N)
+            {
+                printf("%d%d", A, B);
+                found = 1;
+                break;
+            }
+        }
+        if (found)
+        {
+            break;
+        }
+    }
+    if (!found)
+    {
+        printf("No Answer");
+    }
+    return 0;
+}
+```
+:::
+
+
+ #### 6.2.9 最大公约数和最小公倍数
+ **【问题描述】**   
+输入两个正整数a和b（0<a，b<1000000），求出其最大公约数和最小公倍数并输出。    
+**【输入文件】**  
+从标准输入读取一行，是两个整数a和b，以空格分隔。   
+**【输出文件】**   
+向标准输出打印以空格分隔的两个整数，分别是a、b的最大公约数和最小公倍数。在输出末尾要有一个回车符。   
+:::details 答案
+```c
+#include <stdio.h>
+#include <stdlib.h>
+int gcd(int a, int b)
+{
+    return b == 0 ? a : gcd(b, a % b);
+}
+int lcm(int a, int b)
+{
+    return a * b / gcd(a, b);
+}
+int main()
+{
+    int x, y;
+    scanf("%d %d", &x, &y);
+    printf("%d %d\n", gcd(x, y), lcm(x, y));
+    return 0;
+}
+```
+:::
+#### 6.2.10 比较两组整数（新）
+**【问题描述】**   
+比较两组整数是否有相同的元素，每组整数个数不超过100。若有相同的元素，则按照由大到小的顺序输出相同的元素（重复出现的元素只输出一个）。如果没有相同元素，打印字符串：No Answer。   
+**【输入形式】**   
+首先从标准输入（键盘）输入第一组整数的个数，再输入第一组整数，以一个空格分割；然后输入第二组整数的个数，再输入第二组整数，以一个空格分割。  
+**【输出形式】**   
+按照由大到小的顺序向标准输出（显示器）输出两组整数中相同的元素，以一个空格分隔；如果没有相同元素，则打印"No Answer"。   
+:::details 答案
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#define MAX_SIZE 100
+// 冒泡排序函数
+void bubbleSort(int arr[], int n) {
+    int i, j;
+    for (i = 0; i < n-1; i++) {
+        for (j = 0; j < n-i-1; j++) {
+            if (arr[j] < arr[j+1]) {
+                // 交换元素
+                int temp = arr[j];
+                arr[j] = arr[j+1];
+                arr[j+1] = temp;
+            }
+        }
+    }
+}
+int main() {
+    int n1, n2, arr1[MAX_SIZE], arr2[MAX_SIZE];
+    int i, j, count = 0, common[MAX_SIZE];
+    // 读取第一个数组
+    scanf("%d", &n1);
+    for (i = 0; i < n1; i++) {
+        scanf("%d", &arr1[i]);
+    }
+    // 读取第二个数组
+    scanf("%d", &n2);
+    for (i = 0; i < n2; i++) {
+        scanf("%d", &arr2[i]);
+    }
+    // 找出两个数组中的共同元素，并去重
+    for (i = 0; i < n1; i++) {
+        for (j = 0; j < n2; j++) {
+            int isDuplicate = 0;
+            if (arr1[i] == arr2[j]) {
+                int k;
+                for (k = 0; k < count; k++) {
+                    if (common[k] == arr1[i]) {
+                        isDuplicate = 1;
+                        break;
+                    }
+                }
+                if (!isDuplicate) {
+                    common[count++] = arr1[i];
+                }
+            }
+        }
+    }
+    // 如果没有共同元素，输出 "No Answer"
+    if (count == 0) {
+        printf("No Answer");
+    } else {
+        // 使用冒泡排序对共同元素进行降序排序
+        bubbleSort(common, count);
+        // 输出排序后的共同元素
+        for (i = 0; i < count; i++) {
+            if (i != 0) {
+                printf(" ");
+            }
+            printf("%d", common[i]);
+        }
+    }
+    return 0;
+}
+```
+:::
+### 6.3 数组
+#### 6.3.1 在数组中插入新元素
+**【问题描述】**  
+现有一个数组{1,4,6,9,13,16,19,28,40,100}，用户输入一个数字，要求按照原数组的排序方式将用户输入的数字插入到数组中并输出新数组。  
+**【输入形式】**  
+输入一个整数   
+**【输出形式】**  
+输出新的排序完成的数组  
+:::details 答案
+```c
+#include <stdio.h>
+// 冒泡排序函数
+void bubbleSort(int arr[], int n) {
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = 0; j < n - i - 1; j++) {
+            if (arr[j] > arr[j + 1]) {
+                // 交换元素
+                int temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
+            }
+        }
+    }
+}
+int main() {
+    int arr[11] = {1, 4, 6, 9, 13, 16, 19, 28, 40, 100};
+    int num;
+    // 输入要插入的数字
+    scanf("%d", &num);
+    // 将输入的数字放入数组的最后一个位置
+    arr[10] = num;
+    // 使用冒泡排序对数组进行升序排序
+    bubbleSort(arr, 11);
+    // 输出排序后的数组
+    for (int i = 0; i < 11; i++) {
+        printf("%d ", arr[i]);
+    }
+    return 0;
+}
+```
+:::
+ 
+ #### 6.3.2   字符串中字符排序
+ **【问题描述】**   
+编写一个程序，从键盘接收一个字符串，然后按照字符顺序从小到大进行排序，并删除重复的字符。     
+**【输入形式】**    
+用户在第一行输入一个字符串。    
+**【输出形式】**   
+程序按照字符(ASCII)顺序从小到大排序字符串，并删除重复的字符进行输出。   
+:::details 答案
+```c
+#include <stdio.h>
+#include <string.h>
+// 冒泡排序函数
+void bubbleSort(char arr[], int n) {
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = 0; j < n - i - 1; j++) {
+            if (arr[j] > arr[j + 1]) {
+                // 交换字符
+                char temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
+            }
+        }
+    }
+}
+int main() {
+    char str[1000]; // 假设输入的字符串长度不超过 1000
+    scanf("%s", str);
+    int len = strlen(str);
+    // 使用冒泡排序对字符串进行排序
+    bubbleSort(str, len);
+    // 去重并生成结果字符串
+    char result[1000];
+    int resultIndex = 0;
+    for (int i = 0; i < len; i++) {
+        if (i == 0 || str[i] != str[i - 1]) {
+            result[resultIndex++] = str[i];
+        }
+    }
+    result[resultIndex] = '\0'; // 添加字符串结束符
+    // 输出结果
+    printf("%s\n", result);
+    return 0;
+}
+```
+:::
+
+ #### 6.3.3   判断两个数据集是否相同
+ **【问题描述】**   
+从标准输入中读入两个整数集，整数集中数据无序，且可能有重复数据。当两个数据集中数据完全相同（数据相同，数据若重复，重复个数也相同，顺序不一定相同），则两个数据集相同。编写一程序判断输入的两数据集是否相同：用1表示相同，用0表示不同。   
+**【输入形式】**   
+先输入第一组整数集的个数（大于等于1，小于等于20），然后输入第一组整数（以一个空格分隔）；再输入第二组整数集的个数（大于等于1，小于等于20），并输入第二组整数（以一个空格分隔）。   
+**【输出形式】**   
+若两数据集相同，则输出1，否则输出0，然后按照从小到大的顺序分行输出第一个数据集中的数据及重复个数（以一个空格分隔数据和重复个数）。   
+:::details 答案
+```c
+#include <stdio.h>
+#include <stdlib.h>
+// 冒泡排序函数
+void bubbleSort(int arr[], int n) {
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = 0; j < n - i - 1; j++) {
+            if (arr[j] > arr[j + 1]) {
+                // 交换元素
+                int temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
+            }
+        }
+    }
+}
+// 统计数组中每个元素的重复次数
+void countDuplicates(int arr[], int n, int counts[]) {
+    for (int i = 0; i < n; i++) {
+        counts[i] = 1;
+    }
+    for (int i = 0; i < n; i++) {
+        if (arr[i] != -1) {
+            for (int j = i + 1; j < n; j++) {
+                if (arr[i] == arr[j]) {
+                    counts[i]++;
+                    arr[j] = -1; // 标记为已处理
+                }
+            }
+        }
+    }
+}
+// 比较两个数组是否相同
+int compareArrays(int arr1[], int counts1[], int n1, int arr2[], int counts2[], int n2) {
+    if (n1 != n2) {
+        return 0;
+    }
+    for (int i = 0; i < n1; i++) {
+        if (arr1[i] != arr2[i] || counts1[i] != counts2[i]) {
+            return 0;
+        }
+    }
+    return 1;
+}
+int main() {
+    int n1, n2;
+    int arr1[20], arr2[20];
+    int counts1[20], counts2[20];
+    // 读取第一个数组
+    scanf("%d", &n1);
+    for (int i = 0; i < n1; i++) {
+        scanf("%d", &arr1[i]);
+    }
+    // 读取第二个数组
+    scanf("%d", &n2);
+    for (int i = 0; i < n2; i++) {
+        scanf("%d", &arr2[i]);
+    }
+    // 对两个数组进行排序
+    bubbleSort(arr1, n1);
+    bubbleSort(arr2, n2);
+    // 统计每个数组中元素的重复次数
+    countDuplicates(arr1, n1, counts1);
+    countDuplicates(arr2, n2, counts2);
+    // 比较两个数组是否相同
+    int result = compareArrays(arr1, counts1, n1, arr2, counts2, n2);
+    printf("%d\n", result);
+    // 输出第一个数组的元素及其重复次数
+    for (int i = 0; i < n1; i++) {
+        if (arr1[i] != -1) {
+            printf("%d %d\n", arr1[i], counts1[i]);
+        }
+    }
+    return 0;
+}
+```
+:::
+
+ #### 6.3.4   旋转矩阵
+ **【问题描述】**   
+从标准输入中输入两个N（N<=9）阶矩阵，判断第二个矩阵是否是第一个矩阵的旋转矩阵，并输出旋转角度，若不是则输出-1。一个矩阵若是另一个矩阵通过顺时针旋转0度、90度、180度或270度得到，则该矩阵是旋转矩阵。   
+**【输入形式】**   
+从标准输入读取矩阵。   
+第一行只有一个整数N，代表两个矩阵的阶数。   
+然后在后续N行上输入第一个矩阵，每行有N个以若干空格分隔的整数，代表该矩阵在该行上的所有元素。   
+输入第一个矩阵后，再在后续的N行上输入第二个矩阵，每行有N个以若干空格分隔的整数，代表该矩阵在该行上的所有元素。   
+**【输出形式】**    
+若第二个矩阵是第一个矩阵的旋转矩阵，则输出旋转角度（取值为0、90、180或270），若不是则输出－1。    
+:::details 答案
+```c
+#include <stdio.h>
+int isEqual(int matrix1[9][9], int matrix2[9][9], int n);
+void rotate90(int matrix[9][9], int n);
+void rotate180(int matrix[9][9], int n);
+void rotate270(int matrix[9][9], int n);
+int main()
+{
+    int n, i, j;
+    int matrix1[9][9], matrix2[9][9];
+    scanf("%d", &n);
+    for (i = 0; i < n; i++)
+        for (j = 0; j < n; j++)
+            scanf("%d", &matrix1[i][j]);
+    for (i = 0; i < n; i++)
+        for (j = 0; j < n; j++)
+            scanf("%d", &matrix2[i][j]);
+    if (isEqual(matrix1, matrix2, n))
+    {
+        printf("0\n");
+        return 0;
+    }
+    int tempMatrix[9][9];
+    for (i = 0; i < n; i++)
+        for (j = 0; j < n; j++)
+            tempMatrix[i][j] = matrix1[i][j];
+    rotate90(tempMatrix, n);
+    if (isEqual(tempMatrix, matrix2, n))
+    {
+        printf("90\n");
+        return 0;
+    }
+    for (i = 0; i < n; i++)
+        for (j = 0; j < n; j++)
+            tempMatrix[i][j] = matrix1[i][j];
+    rotate180(tempMatrix, n);
+    if (isEqual(tempMatrix, matrix2, n))
+    {
+        printf("180\n");
+        return 0;
+    }
+    for (i = 0; i < n; i++)
+        for (j = 0; j < n; j++)
+            tempMatrix[i][j] = matrix1[i][j];
+    rotate270(tempMatrix, n);
+    if (isEqual(tempMatrix, matrix2, n))
+    {
+        printf("270\n");
+        return 0;
+    }
+    printf("-1\n");
+    return 0;
+}
+int isEqual(int matrix1[9][9], int matrix2[9][9], int n)
+{
+    int i, j;
+    for (i = 0; i < n; i++)
+        for (j = 0; j < n; j++)
+            if (matrix1[i][j] != matrix2[i][j])
+                return 0;
+    return 1;
+}
+void rotate90(int matrix[9][9], int n)
+{
+    int temp[9][9], i, j;
+    for (i = 0; i < n; i++)
+        for (j = 0; j < n; j++)
+            temp[j][n - 1 - i] = matrix[i][j];
+    for (i = 0; i < n; i++)
+        for (j = 0; j < n; j++)
+            matrix[i][j] = temp[i][j];
+}
+void rotate180(int matrix[9][9], int n)
+{
+    int temp[9][9], i, j;
+    for (i = 0; i < n; i++)
+        for (j = 0; j < n; j++)
+            temp[n - 1 - i][n - 1 - j] = matrix[i][j];
+    for (i = 0; i < n; i++)
+        for (j = 0; j < n; j++)
+            matrix[i][j] = temp[i][j];
+}
+void rotate270(int matrix[9][9], int n)
+{
+    int temp[9][9], i, j;
+    for (i = 0; i < n; i++)
+        for (j = 0; j < n; j++)
+            temp[n - 1 - j][i] = matrix[i][j];
+    for (i = 0; i < n; i++)
+        for (j = 0; j < n; j++)
+            matrix[i][j] = temp[i][j];
+}
+```
+:::
+
+ #### 6.3.5     求两组整数的并集
+ **【问题描述】**  
+从标准输入中输入两组整数(每组不超过20个整数，每组整数中元素不重复)，合并两组整数，重复的整数只出现一次，并按从大到小顺序排序输出（即两组整数集的"并集"）。  
+**【输入形式】**  
+首先输入第一组整数的个数，然后在下一行输入第一组整数，以一个空格分隔各个整数；再在新的一行上输入第二组整数的个数，然后在下一行输入第二组整数，以一个空格分隔。  
+**【输出形式】**   
+按从大到小顺序排序输出合并后的整数集（以一个空格分隔各个整数，最后一个整数后的空格可有可无）。   
+:::details 答案
+```c
+#include <stdio.h>
+// 冒泡排序函数（从大到小排序）
+void bubbleSort(int arr[], int n) {
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = 0; j < n - i - 1; j++) {
+            if (arr[j] < arr[j + 1]) {
+                // 交换元素
+                int temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
+            }
+        }
+    }
+}
+int main() {
+    int n1, n2;
+    int arr1[20], arr2[20], result[40]; // 最多20个元素，合并后最多40个
+    int count = 0; // 记录合并后数组的长度
+    // 读取第一个数组
+    scanf("%d", &n1);
+    for (int i = 0; i < n1; i++) {
+        scanf("%d", &arr1[i]);
+    }
+    // 读取第二个数组
+    scanf("%d", &n2);
+    for (int i = 0; i < n2; i++) {
+        scanf("%d", &arr2[i]);
+    }
+    // 将第一个数组的元素加入结果数组
+    for (int i = 0; i < n1; i++) {
+        int isDuplicate = 0;
+        for (int j = 0; j < count; j++) {
+            if (arr1[i] == result[j]) {
+                isDuplicate = 1;
+                break;
+            }
+        }
+        if (!isDuplicate) {
+            result[count++] = arr1[i];
+        }
+    }
+    // 将第二个数组的元素加入结果数组
+    for (int i = 0; i < n2; i++) {
+        int isDuplicate = 0;
+        for (int j = 0; j < count; j++) {
+            if (arr2[i] == result[j]) {
+                isDuplicate = 1;
+                break;
+            }
+        }
+        if (!isDuplicate) {
+            result[count++] = arr2[i];
+        }
+    }
+    // 对结果数组进行从大到小排序
+    bubbleSort(result, count);
+    // 输出结果
+    for (int i = 0; i < count; i++) {
+        printf("%d", result[i]);
+        if (i < count - 1) {
+            printf(" ");
+        }
+    }
+    printf("\n");
+    return 0;
+}
+```
+:::
