@@ -193,7 +193,6 @@ void shellSort(int *arr, int size)
 
 ```
 ```Python
-
 def shellSort(arr):
     size = len(arr)
     increment = size // 2
