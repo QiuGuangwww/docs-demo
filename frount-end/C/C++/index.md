@@ -2115,3 +2115,310 @@ int main() {
 }
 ```
 :::
+
+
+### 6.4 函数、指针、字符串
+#### 6.4.1 素数判断
+**【问题描述】**     
+编写一个函数isprime(n).判断整数n是否为素数.编写程序使用此函数,当输入一个整数时,对它进行判断,当为素数时,输出1.否则,输出0.    
+**【输入形式】**    
+控制台输入一个整数.     
+**【输出形式】**    
+控制台输出判断结果0或者1.   
+:::details 答案
+```c
+#include <stdio.h>
+int is_prime(int n){
+    if (n <= 1){
+        return 1;
+    }
+    else if (n == 2){
+        return 0;
+    }
+    else{
+        int i;
+        for (i = 2; i * i <= n; i++){
+            if (n % i == 0){
+                return 1;
+            }
+        }
+        return 0;
+    }
+}
+int main(){
+    int n;
+    scanf("%d", &n);
+    if (is_prime(n){
+        printf("0");
+    }
+    else{
+        printf("1");
+    }
+    return 0;
+}
+```
+:::
+
+#### 6.4.2 n的阶乘
+**【问题描述】**   
+编写函数fac(n),用递归法求出n的阶乘.在程序中使用此函数,将输入的整数n的阶乘求出并输出到控制台.     
+**【输入形式】**   
+控制台输入整数n     
+**【输出形式】**      
+控制台输出n!    
+:::details 答案
+```c
+#include <stdio.h>
+int fac(int n){
+    if (n == 0){
+        return 1;
+    }
+    else{
+        return n * fac(n - 1);
+    }
+}
+int main(){
+    int n;
+    scanf("%d", &n);
+    printf("%d", fac(n));
+    return 0;
+}
+```
+:::
+
+#### 6.4.3 回文数A
+**【问题描述】**   
+所谓"回文数"是指具有如下性质的整数：一个整数，当它的各位数字逆序排列，形成的整数与原整数相同，这样的数称为回文数。例如，素数11，373，其各位数字对换位置后仍然为11，373，因此这两个整数均为回文数。编写函数int loop(int x)，判断一个整数是否为回文数，如果x是回文数则返回1，否则返回0。编写程序loop.c，接收控制台输入的两个整数a，b。调用loop函数输出a到b之间（包括a和b）的所有为偶数的回文数。    
+**【输入形式】**   
+控制台输入两个整数a和b（必有a<b），以空格分隔。    
+**【输出形式】**    
+输出有若干行，每行有一个a和b之间的回文数。输出各行上的数字不重复，且从小至大依次按序输出。  
+:::details 答案
+```c
+#include <stdio.h>
+int loop(int n) {
+    int original = n;
+    int reversed = 0;
+    while (n > 0) {
+        reversed = reversed * 10 + n % 10;
+        n /= 10;
+    }
+    return (original == reversed && original % 2 == 0);
+}
+int main() {
+    int min, max;
+    scanf("%d %d", &min, &max);
+    int i;
+    for (i = min; i <= max; i++) {
+        if (loop(i)) {
+            printf("%d\n", i);
+        }
+    }
+    return 0;
+}
+```
+:::
+#### 6.4.4   判断两个数组是否包含相同元素
+**【问题描述】**     
+编写一个函数 int same_set(int a[],int b[],int len)，    
+该函数检查相等长度的两个数组是否包含相同的元素,若包含相同的元素,   
+则返回1,否则返回0,其中参数len是数组a与与数组b的元素个数。   
+不考虑元素的顺序，如果元素重复，重复次数也相同。在main函数中读入两个整数数组,测试该函数。   
+**【输入形式】**    
+从键盘输入两个数组，第一行输入数组元素个数，第二行输入第一个数组的各个值，   
+第三行输入第二个数组的各个值。  
+**【输出形式】**      
+如果两个数组包含的元素相同，打印1，否则，打印0。 
+:::details 答案
+```c
+#include <stdio.h>
+// 冒泡排序函数
+void bubble_sort(int arr[], int len) {
+    int i, j, temp;
+    for (i = 0; i < len - 1; i++) {
+        for (j = 0; j < len - 1 - i; j++) {
+            if (arr[j] > arr[j + 1]) {
+                // 交换元素
+                temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
+            }
+        }
+    }
+}
+// 判断两个数组是否相同
+int same_set(int a[], int b[], int len) {
+    bubble_sort(a, len);
+    bubble_sort(b, len);
+    int i;
+    for (i = 0; i < len; i++) {
+        if (a[i] != b[i]) {
+            return 0;
+        }
+    }
+    return 1;
+}
+int main() {
+    int len, i;
+    int a[100], b[100]; // 假设数组的最大长度为 100
+    // 读取数组长度
+    scanf("%d", &len);
+    // 读取数组a
+    for (i = 0; i < len; i++) {
+        scanf("%d", &a[i]);
+    }
+    // 读取数组b
+    for (i = 0; i < len; i++) {
+        scanf("%d", &b[i]);
+    }
+    // 判断两个数组是否相同
+    int result = same_set(a, b, len);
+    printf("%d", result);
+    return 0;
+}
+```
+:::
+
+#### 6.4.5 整数合并
+**【问题描述】**     
+编写一函数int comb(int a,int b)，将两个两位数的正整数a、b合并形成一个整数并返回。合并的方式是：将a的十位和个位数依次放在结果的十位和千位上， b的十位和个位数依次放在结果的个位和百位上。例如，当a＝45，b=12。调用该函数后，返回5241。要求在main函数中调用该函数进行验证：从键盘输入两个整数，然后调用该函数进行合并，并输出合并后的结果。       
+**【输入形式】**    
+输入两个两位数的正整数，以空格隔开。 
+**【输出形式】**    
+输出合并后的正整数。  
+:::details 答案
+```c
+#include <stdio.h>
+int loop(int n) {
+    int original = n;
+    int reversed = 0;
+    while (n > 0) {
+        reversed = reversed * 10 + n % 10;
+        n /= 10;
+    }
+    return (original == reversed && original % 2 == 0);
+}
+int main() {
+    int min, max;
+    scanf("%d %d", &min, &max);
+    int i;
+    for (i = min; i <= max; i++) {
+        if (loop(i)) {
+            printf("%d\n", i);
+        }
+    }
+    return 0;
+}
+```
+:::
+#### 6.4.6   删除子串
+**【问题描述】**   
+编写一个程序，当在一个字符串中出现子串时就删除它。    
+**【输入形式】**    
+用户在第一行输入一个字符串，用户在第二行输入一个子串。    
+**【输出形式】**   
+程序在下一行输出删除其中所有子串后的字符串。如果字符串不包含子串则输出原字符串本身。  
+:::details 答案
+```c
+#include <stdio.h>
+#include <string.h>
+int main()
+{
+    char str[1000], sub[100];
+    fgets(str, sizeof(str), stdin);
+    fgets(sub, sizeof(sub), stdin);
+    str[strcspn(str, "\n")] = '\0';
+    sub[strcspn(sub, "\n")] = '\0';
+    char *src = str;
+    char *dst = str;
+    while (*src)
+    {
+        if (strncmp(src, sub, strlen(sub)) == 0)
+        {
+            src += strlen(sub);
+        }
+        else
+        {
+            *dst++ = *src++;
+        }
+    }
+    *dst = '\0';
+    printf("%s", str);
+    return 0;
+}
+```
+:::
+
+#### 6.4.7   求一个字符串的所有子字符串
+**【问题描述】**   
+从控制台读入一个字符串（长度不超过10），向控制台输出其所有子字符串（包括原字符串本身）。  
+**【输入形式】**   
+从控制台输入一个字符串，字符串中不含空格。  
+**【输出形式】**   
+向控制台输出所有子字符串，每行输出一个，先输出长度短的子字符串，长度相同时以在原字符串中出现的先后顺序输出。   
+:::details 答案
+```c
+#include <stdio.h>
+#include <string.h>
+int main() {
+    char s[11];
+    scanf("%s", s);
+    int len = strlen(s);
+    int sub_len, start, i;
+    for (sub_len = 1; sub_len <= len; sub_len++) {
+        for (start = 0; start <= len - sub_len; start++) {
+            for (i = 0; i < sub_len; i++) {
+                printf("%c", s[start + i]);
+            }
+            printf("\n");
+        }
+    }
+    return 0;
+}
+```
+:::
+
+#### 6.4.8 合并字符串
+**【问题描述】**     
+编写一个函数void str_bin(char str1[ ], char str2[ ])， str1、str2是两个有序字符串（其中字符按ASCII码从小到大排序），将str2合并到字符串str1中，要求合并后的字符串仍是有序的，允许字符重复。在main函数中测试该函数：从键盘输入两个有序字符串，然后调用该函数，最后输出合并后的结果。    
+**【输入形式】**     
+分行从键盘输入两个有序字符串（不超过100个字符）    
+**【输出形式】**     
+输出合并后的有序字符串    
+:::details 答案
+```c
+#include <stdio.h>
+#include <string.h>
+void str_bin(char str1[], char str2[]){
+    int len1 = strlen(str1);
+    int len2 = strlen(str2);
+    int i = 0, j = 0, k = 0;
+    char temp[200] = {0}; // 临时数组存合并结果
+    while (i < len1 && j < len2){
+        if (str1[i] < str2[j]){
+            temp[k++] = str1[i++];
+        }
+        else{
+            temp[k++] = str2[j++];
+        }
+    }
+    while (i < len1){
+        temp[k++] = str1[i++];
+    }
+    while (j < len2){
+        temp[k++] = str2[j++];
+    }
+    temp[k] = '\0';
+    strcpy(str1, temp); // 把结果复制回str1
+}
+int main()
+{
+    char str1[101], str2[101];
+    scanf("%s", str1);
+    scanf("%s", str2);
+    str_bin(str1, str2);
+    printf("%s\n", str1);
+    return 0;
+}
+```
+:::
