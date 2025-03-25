@@ -1071,3 +1071,592 @@ $$
 $$
 LDL^T = \begin{bmatrix} 1 & 0 & 0 \\ -\frac{2}{5} & 1 & 0 \\ 0 & -\frac{5}{11} & 1 \end{bmatrix} \begin{bmatrix} 5 & 0 & 0 \\ 0 & \frac{11}{5} & 0 \\ 0 & 0 & \frac{6}{11} \end{bmatrix} \begin{bmatrix} 1 & -\frac{2}{5} & 0 \\ 0 & 1 & -\frac{5}{11} \\ 0 & 0 & 1 \end{bmatrix}
 $$
+
+#### 2.1.4 三对角矩阵的三角分解
+在用差分法求解二阶常微分方程边值问题时，最后常常会归结为求具有三对角线形系数矩阵的线性方程组$Ax=f$的解，其系数矩阵$A$形如：
+$$
+A = \left[ \begin{array}{cccccc}
+b_1 & c_1 & 0 & 0 & \cdots & 0 \\
+a_2 & b_2 & c_2 & 0 & \cdots & 0 \\
+0 & a_3 & b_3 & c_3 & \cdots & 0 \\
+\vdots & \vdots & \vdots & \vdots & \ddots & \vdots \\0 & 0 & 0 & a_{n-1} & b_{n-1} & c_{n-1} \\
+0 & 0 & 0 & 0 & a_n & b_n 
+\end{array} \right]
+$$
+如果矩阵$A$可以进行$LU$分解，便得到求解三对角方程组最有效的方法——**追赶法**。  
+若$A=LU$,其中
+$$
+\boldsymbol{L}=\begin{pmatrix}
+1& & & &\\
+l_2&1& & &\\
+&l_3&\ddots& &\\
+& &\ddots&1&\\
+& & &l_n&1
+\end{pmatrix}, 
+\boldsymbol{U}=\begin{pmatrix}
+u_1&d_1& & &\\
+&u_2&d_2& &\\
+& &\ddots&\ddots&\\
+& & &u_{n - 1}&d_{n - 1}\\
+& & & &u_n
+\end{pmatrix},
+$$
+则
+$$
+\boldsymbol{L}\boldsymbol{U}=\begin{pmatrix}
+u_1&d_1& & &\\
+l_2u_2&u_2d_2&d_2& &\\
+&l_3u_3&u_3d_3&\ddots&\\
+& &\ddots&\ddots&d_{n - 2}\\
+& & &l_nu_n&u_nd_n
+\end{pmatrix}=\left[ \begin{array}{cccccc}
+b_1 & c_1 & 0 & 0 & \cdots & 0 \\
+a_2 & b_2 & c_2 & 0 & \cdots & 0 \\
+0 & a_3 & b_3 & c_3 & \cdots & 0 \\
+\vdots & \vdots & \vdots & \vdots & \ddots & \vdots \\0 & 0 & 0 & a_{n-1} & b_{n-1} & c_{n-1} \\
+0 & 0 & 0 & 0 & a_n & b_n 
+\end{array} \right]
+$$
+比较$\boldsymbol{L}\boldsymbol{U}$和$A$的对应元素，得计算公式：  
+$$
+\begin{cases}
+u_1=b_1, & l_2=\frac{a_2}{b_1}, & d_1=c_1 \\
+u_i=b_i-l_il_{i-1}, & l_{i+1}=\frac{a_{i+1}}{b_i}, & d_i=c_i-l_{i+1}u_i, & i=2,3,\cdots,n-1 \\
+u_n=b_n-l_nu_{n-1}, & d_n=c_n-l_nu_{n-1}
+\end{cases}
+$$
+计算次序是$d_i=c_i,i=1,2,\dots,n-1$,然后是$u_i=b_i-l_il_{i-1},i=2,3,\cdots,n-1$,最后是$d_n=c_n-l_nu_{n-1}$,因此称为**追赶法**。  
+下面给出一个使追赶法可行的充分条件：  
+:::tip **定理** 
+若矩阵$A$满足  
+$$
+\begin{cases}
+|b_1| > |a_2|, \\
+|b_i| > |a_{i+1}|+|l_iu_{i-1}|, & i=2,3,\cdots,n-1, \\
+|b_n| > |l_nu_{n-1}|
+\end{cases}
+$$
+则$A$可进行$LU$分解。 
+::: 
+
+#### 2.1.5 条件数与方程组的性态
+
+考虑线性方程组
+$$
+\begin{pmatrix}2 & 6 \\2 & 6.00001\end{pmatrix}\begin{pmatrix}x_1 \\x_2\end{pmatrix}=
+\begin{pmatrix}
+8 \\
+8.00001
+\end{pmatrix}
+$$
+它有准确解 $x = (1, 1)^T$，如果方程组右端项发生微小的变化 $\delta b = (0, 0.00001)^T$，
+
+$$
+\begin{pmatrix}
+2 & 6 \\
+2 & 6.00001
+\end{pmatrix}
+\begin{pmatrix}
+\tilde{x}_1 \\
+\tilde{x}_2
+\end{pmatrix}=
+\begin{pmatrix}
+8 \\
+8.00002
+\end{pmatrix}
+$$
+
+其解为 $\tilde{x} = (-2, 2)^T$，可以看出，
+
+$$
+\frac{\|x - \tilde{x}\|_\infty}{\|x\|_\infty} = \frac{\|(3)\|_\infty}{\|(1)\|_\infty} = 3, \quad \frac{\|\delta b\|_\infty}{\|b\|_\infty} = \frac{\|(0.00001)\|_\infty}{\|(8.00001)\|_\infty} \approx \frac{0.00001}{8.00001} \approx \frac{1}{800000}
+$$
+
+即解的相对误差是右端的相对误差的 2400000 倍。
+
+:::info **定义** 
+如果线性方程组 $Ax = b$ 中，$A$ 或 $b$ 的元素的微小变化，会引起方程组解的巨大变化，则称方程组为“病态”方程组；称矩阵 $A$ 为“病态”矩阵，否则称方程组为“良态”方程组，称矩阵 $A$ 为“良态”矩阵。
+:::
+我们需要一种刻画矩阵和方程组“病态”程度的量。设线性方程组 $Ax = b$ 中的 $A$ 为非奇异矩阵，$x$ 为方程组的准确解。考虑 $b$ 有误差 $\delta b$，其解为 $x + \delta x$，因为 $x$ 为方程组的准确解，故为
+
+$$
+A(x + \delta x) = b + \delta b
+$$
+
+两边取范数，有
+
+$$
+\|\delta x\| = \|A^{-1}\delta b\| \leq \|A^{-1}\| \|\delta b\|
+$$
+
+又因为 $\|b\| = \|Ax\| \leq \|A\| \|x\|$，所以
+
+$$
+\frac{1}{\|x\|} \leq \frac{\|A\|}{\|b\|}
+$$
+
+将上面两个不等式的两边分别相乘，得
+
+$$
+\frac{\|\delta x\|}{\|x\|} \leq \|A\| \|A^{-1}\| \cdot \frac{\|\delta b\|}{\|b\|}
+$$
+
+由此可见，量 $\|A\| \|A^{-1}\|$ 是右端项相对误差 $\frac{\|\delta b\|}{\|b\|}$ 的倍乘因子，该量越大，方程组右端项变化所引起的解向量的相对误差可能越大，它可刻画矩阵 $A$ 的病态程度。
+
+:::info **定义** 
+设 $A$ 为非奇异矩阵，$\| \cdot \|$ 为矩阵的算子范数，则称
+
+$$
+\text{cond}(A) = \|A\| \|A^{-1}\|
+$$
+
+为矩阵 $A$ 的条件数。
+:::
+常用的条件数为
+
+$$
+\text{cond}_\infty(A) = \|A\|_\infty \|A^{-1}\|_\infty,
+$$
+
+$$
+\text{cond}_1(A) = \|A\|_1 \|A^{-1}\|_1,
+$$
+
+$$
+\text{cond}_2(A) = \|A\|_2 \|A^{-1}\|_2 = \sqrt{\lambda_{\max}(A^*A)}，
+$$
+
+分别称为矩阵 $A$ 的 $\infty$ -条件数、1-条件数和 2-条件数。
+
+矩阵的条件数具有如下性质：
+
+1. $\text{cond}(A) \geq 1$；
+2. $\text{cond}(A^T) = \text{cond}(A)$；
+3. $\text{cond}(\alpha A) = \text{cond}(A), \alpha \neq 0, \alpha \in \mathbb{R}$；
+4. 如果 $U$ 为正交矩阵，则 $\text{cond}_2(U) = 1$，$\text{cond}_2(UA) = \text{cond}_2(AU) = \text{cond}_2(A)$。
+
+有
+
+$$
+\frac{\|\delta x\|}{\|x\|} \leq \text{cond}(A) \frac{\|\delta b\|}{\|b\|}
+$$
+
+这说明 $\text{cond}(A)$ 越大，解的相对误差 $\frac{\|\delta x\|}{\|x\|}$ 可能越大，$A$ 对求解线性方程组来说就越可能呈现病态。但对于 $\text{cond}(A)$ 多大 $A$ 才算病态，通常没有具体的衡量标准；反之，$\text{cond}(A)$ 越小，解的相对误差 $\frac{\|\delta x\|}{\|x\|}$ 越小，$A$ 呈现良态。
+
+**例** 求三阶对称正定矩阵 $A = \begin{pmatrix} 1 & 1 & 1 \\ 3 & 4 & 5 \\ 4 & 5 & 6 \end{pmatrix}$ 的条件数 $\text{cond}_2(A)$。
+
+不难求出 $A^{-1} = \begin{pmatrix} 72 & -240 & 180 \\ -240 & 900 & -720 \\ 180 & -720 & 600 \end{pmatrix}$，从而，经计算得 $\|A\|_2 = 13$，$\|A^{-1}\|_2 = 1860$，则 $\text{cond}_2(A) = 2.015 \times 10^4$。
+
+一种常常出现在数据拟合和函数逼近的研究中的病态矩阵是 $n$阶 $Hilbert$ 矩阵：
+
+$$
+H_n = (h_{ij})_{n \times n} = \left(\frac{1}{i + j - 1}\right)_{n \times n}
+$$
+
+$$
+= \begin{pmatrix} 1 & \frac{1}{2} & \cdots & \frac{1}{n} \\ \frac{1}{2} & \frac{1}{3} & \cdots & \frac{1}{n+1} \\ \vdots & \vdots & \ddots & \vdots \\ \frac{1}{n} & \frac{1}{n+1} & \cdots & \frac{1}{2n-1} \end{pmatrix}, \quad i, j = 1, 2, \cdots, n.
+$$
+
+其条件数随着阶数 n 的增大而呈现出严重病态，如
+
+$$
+\text{cond}(H_4) = 1.5514 \times 10^4; \quad \text{cond}(H_9) = 1.4951 \times 10^{10}.
+$$
+
+一般情况下，系数矩阵和右端项的扰动对解的影响为
+
+:::info 定理 
+设 $Ax = b$，$A$ 为非奇异矩阵，$b$ 为非零向量且 $A$ 和 $b$ 均有扰动。若 $A$ 的扰动 $\delta A$ 非常小，使得 $\|A^{-1}\| \|\delta A\| < 1$，则
+
+$$
+\frac{\|\delta x\|}{\|x\|} \leq \frac{\text{cond}(A)}{1 - \text{cond}(A) \frac{\|\delta A\|}{\|A\|}} \left( \frac{\|\delta A\|}{\|A\|} + \frac{\|\delta b\|}{\|b\|} \right).
+$$
+:::
+**证** 扰动后的方程组为
+
+$$
+(A + \delta A)(x + \delta x) = b + \delta b.
+$$
+
+将 $Ax = b$ 代入上式，整理后有
+
+$$
+\delta x = A^{-1}\delta b - A^{-1}\delta A x - A^{-1}\delta A \delta x.
+$$
+
+将上式两端取范数，应用向量范数的三角不等式及矩阵和向量范数的相容条件，则有
+
+$$
+\|\delta x\| \leq \|A^{-1}\| \cdot \|\delta b\| + \|A^{-1}\| \cdot \|\delta A\| \cdot \|x\| + \|A^{-1}\| \cdot \|\delta A\| \cdot \|\delta x\|.
+$$
+
+整理后，得
+
+$$
+(1 - \|A^{-1}\| \|\delta A\|) \cdot \|\delta x\| \leq \|A^{-1}\| \cdot (\|\delta b\| + \|\delta A\| \cdot \|x\|),
+$$
+
+由假设，$A$ 的扰动 $\delta A$ 非常小，使得 $\|A^{-1}\| \|\delta A\| < 1$，则
+
+$$
+\|\delta x\| \leq \frac{\|A^{-1}\| \cdot \|\delta b\|}{1 - \|A^{-1}\| \cdot \|\delta A\|} + \frac{\|A^{-1}\| \cdot \|\delta A\| \cdot \|x\|}{1 - \|A^{-1}\| \cdot \|\delta A\|}.
+$$
+
+再利用 $\frac{1}{\|x\|} \leq \frac{\|A\|}{\|b\|}$ 有
+
+$$
+\frac{\|\delta x\|}{\|x\|} \leq \frac{\|A\|}{1 - \|A^{-1}\| \cdot \|\delta A\|} \left( \frac{\|\delta b\|}{\|b\|} + \frac{\|\delta A\| \cdot \|x\|}{\|A\|} \right)
+$$
+
+$$
+= \frac{\|A\|}{1 - \|A^{-1}\| \cdot \|\delta A\|} \left( \frac{\|\delta b\|}{\|b\|} + \frac{\|\delta A\|}{\|A\|} \right)
+$$
+
+$$
+= \frac{\text{cond}(A)}{1 - \text{cond}(A) \frac{\|\delta A\|}{\|A\|}} \left( \frac{\|\delta A\|}{\|A\|} + \frac{\|\delta b\|}{\|b\|} \right).
+$$
+
+$Q.E.D$
+
+在前面的例子中取 $\delta b = (0, 0.00001)^T, \delta A = 300000.5 - 300000$，来看 $\delta b$ 对 $x$ 的影响，由
+
+$$
+\frac{6}{6.00001} \text{易求出} A^{-1} = \begin{pmatrix} -100000 & 5 \\ 100000 & 1 \end{pmatrix},
+$$
+
+则
+
+$$
+\text{cond}_2(A) = \|A\|_2 \|A^{-1}\|_2 = 600000.5 \times 8.00001 = 48000010 = 4.8 \times 10^6 \times 8 \times 0.00001
+$$
+
+$$
+= 4.8 \times 10^2 \times 0.125 \times 10^{-3} = 6 = 600\%.
+$$
+
+可见，右端向量 $b$ 的分量千分之一的变化，可能引起解向量 $x$ 百分之六百的变化。这说明矩阵 $A$ 严重病态，相应的线性方程组是病态方程组。
+
+关于近似解的余量与它的相对误差间的关系有
+
+:::info 定理 
+设 $Ax = b$，$A$ 为非奇异矩阵，$b$ 为非零向量，则方程组近似解 $x$ 的事后估计式为
+
+$$
+\frac{\|x - \tilde{x}\|}{\|x\|} \leq \text{cond}_2(A) \frac{\|b - A\tilde{x}\|}{\|b\|}
+$$
+
+其中称 $\|b - A\tilde{x}\|$ 为近似解 $\tilde{x}$ 的余量，简称余量。
+:::
+最后，我们再来看一下条件数的几何意义。
+
+:::info 定理 
+设 $A \in \mathbb{R}^{n \times n}$ 非奇异，则
+$$
+\min \left\{ \frac{\|\delta A\|_2}{\|A\|_2} : A + \delta A \text{ 奇异} \right\} = \frac{1}{\|A^{-1}\|_2 \cdot \|A\|_2} = \frac{1}{\text{cond}_2(A)},
+$$
+:::
+即在谱范数下，一个矩阵的条件数的倒数正好等于该矩阵与全体奇异矩阵所成集合的相对距离（证明见[17]）。
+
+此定理表明，当 $A \in \mathbb{R}^{n \times n}$ 十分病态时，就说明 $A$ 已与一个奇异矩阵十分接近。  
+
+#### 2.1.6 矩阵的QR分解
+
+Gauss消去过程实际上是用一系列具有特定结构的单位下三角矩阵将$A$逐步上三角化的过程。由矩阵的条件数定义可以看出，正交矩阵是形态最好的矩阵，如果我们能用正交矩阵代替Gauss消去过程中的单位下三角矩阵，则可得到一种更为优秀的矩阵分解方法。这就是QR分解。QR分解具有数值稳定性。
+在线性代数中，通过 Schmidt 正交化方法，证明了若方程 $Ax = b$ 且 $\text{rank}(A) = n$，则存在正交矩阵 $Q$ 和对角元都大于零的上三角矩阵 $R$，使得 $A = QR$，而且对任意非零向量 $\alpha$，必有正交矩阵 $Q$ 使 $Q\alpha = \|\alpha\|_2 e_1$，如果 $A \in \mathbb{C}^{m \times n}, \text{rank}(A) = n$，使用同样的方法可以证明（即将 $A$ 分解成）
+
+$$
+A = Q \begin{pmatrix} R \\ 0 \end{pmatrix} = QR,
+$$
+
+其中 $R$ 为对角元大于零的上三角形矩阵。矩阵的分解式 $(2 - 36)$ 称为矩阵 $A$ 的 $QR$ 分解，由于 $\text{cond}(A) = \text{cond}(R)$，因此矩阵 $A$ 的 $QR$ 分解（也称为正交三角分解）的实现在矩阵计算中是非常重要的。为实现 $QR$ 分解，我们引入 Householder 矩阵。
+
+:::info 定义 
+设 $\omega \in \mathbb{R}^n, \omega \neq 0$，称这种特殊的初等矩阵
+
+$$
+H(\omega) = I - \frac{2}{\omega^T \omega} \omega \omega^T
+$$
+
+为 Householder 矩阵（简称 H 阵），或称 Householder 变换矩阵
+:::
+显然该矩阵具有如下性质：
+
+(1) $H(\omega)^T = H(\omega)$，即 H 阵为对称阵；
+
+(2) $H(\omega)^T H(\omega) = I$，即 H 阵为正交阵；
+
+(3) 如果 $H(\omega)x = y$，则 $H(\omega)y = x$；反之，对于任意两个向量 $x, y \in \mathbb{R}^n$，若 $\|x\|_2 = \|y\|_2, x \neq y$，则必存在 Householder 矩阵 $H$，使得 $y = Hx$；
+
+(4) 设 $x = (x_1, x_2, \cdots, x_n)^T \in \mathbb{R}^n$ 且 $x \neq 0$，取 $\omega = x \pm \|x\|_2 e_1$，则
+
+$$
+H(\omega) = H(x \pm \|x\|_2 e_1)x = \pm \|x\|_2 e_1 = \pm \|x\|_2 (1, 0, \cdots, 0)^T.
+$$
+
+只证明性质(3)，并给出其几何解释，事实上
+
+$$
+\|x\|_2^2 = (H(\omega)x)^T (H(\omega)x) = x^T (H(\omega))^T H(\omega)x = x^T x = \|x\|_2^2.
+$$
+
+性质(3) 几何意义：在 $\mathbb{R}^n$ 中说明将 H 阵称为反射矩阵的原因。考虑 $(\mathbb{R}^n)$ 中单位法过原点的平面 $\pi$。任取 $x \in \mathbb{R}^n, x \neq 0$ 其中 $u \perp v, v \in \pi$，即有 $u = \lambda \omega, (v, \omega) = \omega^T v = 0$。故
+
+$$
+H(\omega)x = (I - 2\omega \omega^T)x = x - 2\omega \omega^T x
+$$
+
+$$
+= (x + v) - 2\omega \omega^T (u + v) = (u + v) - 2\omega \omega^T (\lambda \omega + v)
+$$
+
+$$
+= (\omega + v) - 2\lambda \omega (\omega^T \omega) - 2\omega (\omega^T v)
+$$
+
+$$
+= u + v - 2u = v - u = -y.
+$$
+
+可知，向量 x 由 H 阵作用后得到的向量 y 关于平面 $\pi$ 对称，也即关于平面 $\pi$ 的反射向量。反过来，对于任意两个向量 $x, y \in \mathbb{R}^n$，若 $\|x\|_2 = \|y\|_2$，且 $x \neq y$，则一定存在 Householder 矩阵 $H$，使得 $y = Hx$。从几何上不难看出，只要取 $x = x - y$ 即可。事实上，由于 $\|x\|_2 = \|x\|_2$，故
+
+$$
+\|\omega\|_2^2 = \|x - y\|_2^2 = 2x^T x - 2x^T y
+$$
+
+$$
+= 2(x - y)^T \frac{x + y}{2} = 2(x - y)^T \frac{x - y}{2} = \|x - y\|_2^2.
+$$
+
+基于性质(3)，可知性质(4) 是其特例。对于 $x \in \mathbb{R}^n$ 的数值计算中，可取 $\omega = x - \text{sgn}(x_1) \|x\|_1 e_1$，其中 $\text{sgn}(x) = \begin{cases} 1, & x > 0, \\ -1, & x < 0, \end{cases}$ 这种取法在计算中可避免出现分母过小，因而可以减少计算误差。
+
+对于 n 阶复矩阵 $A$，也有相应的性质(4)，特别地
+
+:::info 推论 
+设 $x = (x_1, x_2, \cdots, x_n)^T \in \mathbb{C}^n$ 且 $x \neq 0$，则存在 Householder 矩阵 $H(\omega) = I - \frac{2}{\omega^T \omega} \omega \omega^T$ 使得 $H(\omega)x = \alpha e_1$，其中 $|\alpha| = \|x\|_2$ 且 $\alpha x^H e_1$ 为实数。
+:::
+证明略。
+
+**例** 已知向量
+$$
+\alpha_1 = (-3, 0, 4)^T, \quad y = (0,0,5)^T, \quad (2) \quad x = (i, -2i, 0.2)^T, \quad y = (3i, 0, 0)^T,
+$$
+
+试求 Householder 矩阵 $H$，使得 $y = Hx$。
+
+**解**  (1) 取 $\omega = x - y = (-3, 0, -1)^T, \|\omega\|_2^2 = 10$，于是
+
+$$\begin{align*}  &H(\omega)=I-\frac{2}{\omega^{\mathrm{T}}\omega}\omega\omega^{\mathrm{T}}=\begin{pmatrix} 1& & \\ &1& \\ & &1 \end{pmatrix}-\frac{1}{5}\begin{pmatrix} -3\\ 0\\ -1 \end{pmatrix}(-3,0, -1)\\ &=\begin{pmatrix} -\frac{4}{5}&0&-\frac{3}{5}\\ 0&1&0\\ -\frac{3}{5}&0&\frac{4}{5} \end{pmatrix} \end{align*} $$
+
+即
+
+$$
+\begin{pmatrix} -\frac{4}{5}&0&-\frac{3}{5}\\ 0&1&0\\ -\frac{3}{5}&0&\frac{4}{5} \end{pmatrix} \begin{pmatrix} -3\\ 0\\ 4 \end{pmatrix}= \begin{pmatrix} 0\\ 0\\ 5 \end{pmatrix} 
+$$
+
+(2) 由推论，可知 $\alpha$ 应满足
+
+$$
+|\alpha| = \|x\|_2 = \sqrt{|-2i|^2 + |i|^2 + 2^2} = 3,
+$$
+
+且 $\alpha x^H e_1 = -ai$ 为实数，所以取 $\alpha = 3i$。于是 $\omega = x - \alpha e_1 = (-2i, -2i, 0, 2)^T$，$\|\omega\|_2^2 = 12$，于是
+
+$$
+H(\omega) = I - \frac{2}{\omega^T \omega} \omega \omega^T = \begin{pmatrix} 1& & & \\ &1& & \\ & &1& \\ & & &1 \end{pmatrix}-\frac{1}{6} \begin{pmatrix} -2\mathrm{i}\\ -2\mathrm{i}\\ 0\\ 2 \end{pmatrix}(2\mathrm{i},2\mathrm{i},0,2)
+$$
+
+$$
+= \frac{1}{3} \begin{pmatrix} 1 & -2 & 0 & 2i \\ -2 & 1 & 0 & 2i \\ 0 & 0 & 2 & 2 \\ 2i & 2i & 2 & 1 \end{pmatrix}
+$$
+即
+$$
+\frac{1}{3}\begin{pmatrix}
+1& - 2&0&2\mathrm{i}\\
+-2&1&0&2\mathrm{i}\\
+0&0&3&0\\
+-2\mathrm{i}&-2\mathrm{i}&0&1
+\end{pmatrix}
+\begin{pmatrix}
+\mathrm{i}\\
+-2\mathrm{i}\\
+0\\
+2
+\end{pmatrix}=
+\begin{pmatrix}
+3\mathrm{i}\\
+0\\
+0\\
+0
+\end{pmatrix}
+$$
+
+下面利用一系列 H 阵，将矩阵 $A$ 分解成 $QR$ 的形式。
+
+**例**  利用 Householder 变换求 $A$ 的 $QR$ 分解，其中
+
+$$
+A = \begin{pmatrix} 1 & 1 &1\\ 2 & 3 &1\\ 2 & 1 & -5 \end{pmatrix}.
+$$
+
+解 将 $A$ 按列分块为 $A = (a_1, a_2, a_3)$，其中 $a_1 = (1, 2, 2)^T, \|a_1\|_2 = 3$，取 $\omega_1 = a_1 - \|a_1\|_2 e_1 = \begin{pmatrix} -2 \\ 2 \\ 2 \end{pmatrix}$，则令
+
+$$
+Q_1 = H(\omega_1) = I - \frac{2}{\omega_1^T \omega_1} \omega_1 \omega_1^T = \begin{pmatrix} 1 & \frac{2}{3} & \frac{2}{3} \\ \frac{2}{3} & \frac{1}{3} & \frac{1}{3} \\ \frac{2}{3} & \frac{1}{3} & \frac{1}{3} \end{pmatrix},
+$$
+
+$$
+H(\omega_1)A = (H(\omega_1)a_1, H(\omega_1)a_2, H(\omega_1)a_3) 
+$$
+
+$$
+= \begin{pmatrix} 3 & 3 & -\frac{7}{3} \\ 0 & 1 & \frac{13}{3} \\ 0 & -1 & -\frac{5}{3} \end{pmatrix}= \begin{pmatrix} 3 & b^T \\ 0 & A_2 \end{pmatrix},
+$$
+
+其中
+$b^T = (3, -\frac{7}{3})$，$A_2 = \begin{pmatrix} 1 & \frac{13}{3} \\ -1 & -\frac{5}{3} \end{pmatrix} = (\bar{a}_1, \bar{a}_2)$，
+
+$\bar{a}_1 = (1, -1)^T$，$\bar{a}_2 = (\frac{13}{3}, -\frac{5}{3})^T$，$\|\bar{a}_1\|_2 = \sqrt{2}$，
+
+取
+
+$$
+\omega_2 = \bar{a}_1 - \|\bar{a}_1\|_2 e_1 = \begin{pmatrix} -1 \\ -1 \end{pmatrix} - \begin{pmatrix} \sqrt{2} \\ 0 \end{pmatrix} = \begin{pmatrix} 1 - \sqrt{2} \\ -1 \end{pmatrix},
+$$
+
+$$
+H(\omega_2) = \begin{pmatrix} 1 & 0 \\ 0 & 1 \end{pmatrix} - \frac{1}{2 - \sqrt{2}} \begin{pmatrix} 3 - 2\sqrt{2} & -1 + \sqrt{2} \\ -1 + \sqrt{2} & 1 \end{pmatrix} = \frac{1}{2} \begin{pmatrix} \sqrt{2} & -\sqrt{2} \\ -\sqrt{2} & -\sqrt{2} \end{pmatrix},
+$$
+
+$$
+H(\omega_2)A_2 = (H(\omega_2)\bar{a}_1, H(\omega_2)\bar{a}_2) = \begin{pmatrix} \sqrt{2} & 3\sqrt{2} \\ 0 & -\frac{4}{3}\sqrt{2} \end{pmatrix}.
+$$
+
+令 $Q_2 = \begin{pmatrix} 1 & 0^T \\ 0 & H(\omega_2) \end{pmatrix}$，则
+
+$$
+Q_2Q_1A = \begin{pmatrix} 1 & 0^T \\ 0 & H(\omega_2) \end{pmatrix} \begin{pmatrix} 3 & b^T \\ 0 & A_2 \end{pmatrix} = \begin{pmatrix} 3 & 3 & -\frac{7}{3} \\ 0 & \sqrt{2} & \frac{3\sqrt{2}}{2} \\ 0 & 0 & -\frac{4}{3}\sqrt{2} \end{pmatrix} = R,
+$$
+
+$$
+Q^T = Q_2Q_1 = \begin{pmatrix} 1 & 0 & 0 \\ 0 & \frac{\sqrt{2}}{2} & -\frac{\sqrt{2}}{2} \\ 0 & -\frac{\sqrt{2}}{2} & -\frac{\sqrt{2}}{2} \end{pmatrix} \begin{pmatrix} 1 & \frac{2}{3} & \frac{2}{3} \\ \frac{2}{3} & \frac{1}{3} & \frac{1}{3} \\ \frac{2}{3} & \frac{1}{3} & \frac{1}{3} \end{pmatrix} = \begin{pmatrix} 1 & \frac{2}{3} & \frac{2}{3} \\ 0 & \frac{2}{3} & \frac{2}{3} \\ 0 & -\frac{2\sqrt{2}}{3} & \frac{2\sqrt{2}}{3} \end{pmatrix},
+$$
+
+则 $A = QR$。
+
+### 2.2 特殊矩阵的特征系统
+
+
+
+本节将介绍理论上和特征系统计算上非常重要的矩阵分解，即 Schur 分解。
+
+定理 2.8 (Schur 定理) 设 $A \in \mathbb{C}^{n \times n}$，则存在酉阵 $U \in \mathbb{C}^{n \times n}$ 使得
+
+$$
+A = U R U^H,
+$$
+
+其中 $R \in \mathbb{C}^{n \times n}$ 为上三角形矩阵。
+
+证 对矩阵的阶数 n 用数学归纳法证明。
+
+$n = 1$ 时，定理显然成立。
+
+设 $n = k$ 时，定理成立，现在证明 $n = k + 1$ 定理也成立。
+
+设 $A$ 为 $k + 1$ 阶方阵 $A$ 的一个特征值，于是存在 $u_1 \in \mathbb{C}^{k + 1}$ 且 $\|u_1\| = 1$，使得 $Au_1 = \lambda_1 u_1$，将 $u_1$ 扩充成 $\mathbb{C}^{k + 1}$ 的一组标准正交基 $u_1, u_2, \cdots, u_{k + 1}$，记 $U_1 = (u_1, u_2, \cdots, u_{k + 1})$，显然 $U_1 \in \mathbb{C}^{(k + 1) \times (k + 1)}$ 为酉阵，由于 $Au_1 = \lambda_1 u_1$，则
+
+$$
+U_1^H A U_1 = \begin{pmatrix} \lambda_1 & * \\ 0 & A_1 \end{pmatrix},
+$$
+
+其中 $A_1 \in \mathbb{C}^{k \times k}, 0$ 为 k 阶零向量。
+
+由归纳法假设知，存在酉阵 $U_2 \in \mathbb{C}^{k \times k}$，使得
+
+$$
+A_1 = U_2 R_1 U_2^H,
+$$
+
+其中 $R_1 \in \mathbb{C}^{k \times k}$ 为上三角形矩阵。综合关系式 $(2 - 40)$ 和 $(2 - 41)$ 有
+
+$$
+A = U_1 \begin{pmatrix} \lambda & c^T \\ 0 & A_1 \end{pmatrix} U_1^H = U_1 \begin{pmatrix} \lambda & c^T \\ 0 & U_2 R_1 U_2^H \end{pmatrix} U_1^H,
+$$
+
+$$
+= U_1 \begin{pmatrix} \lambda & 0^T \\ 0 & U_2 \end{pmatrix} \begin{pmatrix} I & 0 \\ 0 & R_1 \end{pmatrix} \begin{pmatrix} 1 & 0^T \\ 0 & U_2^H \end{pmatrix} U_1^H,
+$$
+
+其中 $c = U_2^H c \in \mathbb{C}^k$。再记
+
+$$
+U = U_1 \begin{pmatrix} 1 & 0^T \\ 0 & U_2 \end{pmatrix}, \quad R = \begin{pmatrix} \lambda & c^T \\ 0 & R_1 \end{pmatrix},
+$$
+
+容易验证 $U \in \mathbb{C}^{(k + 1) \times (k + 1)}$ 为酉阵，且 $U^H A U = R$，即证明了 $n = k + 1$ 时定理成立。
+
+称 $(2 - 39)$ 为矩阵的 Schur 分解，在矩阵的 Schur 分解中，由于 $A$ 和 $R$ 是酉相似的，因此具有相同的特征值，而上三角形矩阵的特征值即为其对角元。
+
+三角形矩阵 $R$，通常称 $R$ 为 $A$ 的 Schur 标准型。一旦得到矩阵的 Schur 分解，实际上我们已经得到了矩阵的特征值，而特征值的计算一般必须采用迭代法，因此与上一节介绍的矩阵的 Doolittle 分解和 QR 分解不同，通常我们无法在有限步内，准确地得到矩阵 $A$ 的 Schur 分解。由于实矩阵 $A$ 的特征值可能是一个复数，因此即使矩阵 $A$ 是实矩阵，Schur 分解中的矩阵 $U$ 和 $R$ 也可能是复的。
+
+由 Schur 定理自然会想到，什么样的矩阵可以酉相似于对角阵？
+
+定义 2.5 设 $A \in \mathbb{C}^{n \times n}$，若
+
+$$
+A^H A = AA^H,
+$$
+
+则称矩阵 $A$ 为正规矩阵。
+
+常见的 Hermite 阵 $(A^H = A)$，实对称阵 $(A^T = A)$，斜 Hermite 阵 $(A^T = -A)$，实反对称阵 $(A^T = -A)$，酉阵 $(A^H A = AA^H = I)$ 和正交矩阵 $(A^T A = AA^T = I)$ 等均为正规矩阵。
+
+定理 2.2 设 $A$ 为 n 阶方阵，则 $A$ 为正规矩阵的充分必要条件是存在 n 阶酉阵 $U$，使得
+
+$$
+A = U D U^H,
+$$
+
+其中 $D$ 为 n 阶对角阵。
+
+证 充分性。由于 $A = U D U^H$，则
+
+$$
+A^H A = (U D U^H)^H (U D U^H) = U D^H U^H U D U^H = U (D^H D) U^H,
+$$
+
+$$
+AA^H = (U D U^H)(U D U^H)^H = U D U^H U D^H U^H = U (D D^H) U^H.
+$$
+
+设 $D$ 的对角元素为 $d_i \in \mathbb{C}, i = 1, 2, \cdots, n$，从而
+
+$$
+D^H D = \begin{pmatrix} |d_1|^2 & & \\ & \ddots & \\ & & |d_n|^2 \end{pmatrix} = D D^H,
+$$
+
+故 $A^H A = AA^H$，即 $A$ 为正规矩阵。
+
+必要性。由 Schur 分解定理知，$A = U D U^H, U \in \mathbb{C}^{n \times n}$ 为酉阵，$R$ 为上三角形矩阵。那么，由假设知 $A$ 为正规矩阵，即 $A^H A = AA^H$，仿照充分性，可推得 $R^H R = R R^H$，即 $R$ 为正规矩阵。现设
+
+$$
+R = \begin{pmatrix} r_{11} & r_{12} & \cdots & r_{1n} \\ & r_{22} & \cdots & r_{2n} \\ && \ddots & \vdots \\ &&& r_{nn} \end{pmatrix},
+$$
+
+$$
+R^H = \begin{pmatrix} \overline{r_{11}} & \overline{r_{12}} & \cdots & \overline{r_{1n}} \\ \overline{r_{12}} & \overline{r_{22}} & \cdots & \overline{r_{2n}} \\ \vdots & \vdots & \ddots & \vdots \\ \overline{r_{1n}} & \overline{r_{2n}} & \cdots & \overline{r_{nn}} \end{pmatrix}.
+$$
+
+注意到
+
+$$
+\begin{pmatrix} |r_{11}|^2 & * & \cdots & * \\ |r_{22}|^2 + |r_{12}|^2 & \cdots & * \\ \vdots & \vdots & \ddots & \vdots \\ * & * & \cdots & \sum_{i=1}^n |r_{in}|^2 \end{pmatrix} = R R^H = R^H R = \begin{pmatrix} |r_{11}|^2 & * & \cdots & * \\ * & \sum_{j=1}^n |r_{ij}|^2 & \cdots & * \\ \vdots & \vdots & \ddots & \vdots \\ * & * & \cdots & \sum_{i=1}^n |r_{in}|^2 \end{pmatrix}.
+$$
+
+比较两边矩阵的对角元素，可得
+
+$$
+|r_{12}|^2 + |r_{22}|^2 = \sum_{i=1}^n |r_{2i}|^2, \quad \cdots, \quad \sum_{i=1}^n |r_{in}|^2 = |r_{nn}|^2,
+$$
+
+总之有：$r_{ij} = \overline{r_{ji}} = 0, 1 \leq i < j \leq n$，即 $R$ 为对角矩阵。从而结论成立。
