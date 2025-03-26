@@ -2422,3 +2422,322 @@ int main()
 }
 ```
 :::
+
+## C++
+C++是一门面向对象的语言，先从面向对象开始介绍。
+## 1.面向对象
+### 1.1  类的基本概念
+#### 1.1.1 类的定义
+-   **类定义**：类是一个模板，类似于结构体。用于创建对象。类中包含成员数据（属性）和成员函数（方法）。
+    
+-   **示例**：
+```C++
+class student {    //这个大括号中的叫类定义
+    string name; // 学生的名字
+    int age;     // 学生的年龄
+};
+```
+类名为student，类里的两个内容：年龄与名字叫做类的成员数据，或者叫属性。类比`int a=10`，10即为$a$的属性。到这里为止，和C语言中的结构体概念是一样的。  
+#### 1.1.2 如何使用一个类
+类被定义后，就创造类的对象，形式与其他类型变量一样。
+```C++
+student aa;//创建一个student类的对象，名字叫aa
+aa.age=20；//给aa的属性赋值，与结构体一样
+```
+
+### 1.2 公有与私有的初步概念
+- 公有（public）：公有成员在类的内部和外部都能被访问。类的用户可以直接使用对象来访问这些公有成员。
+- 私有（private）：私有成员仅能在类的内部访问，也就是在类的成员函数里可以访问。类外部的代码，比如在`main`函数或者其他类的成员函数中，无法直接访问这些私有成员。在类定义中，如果没有特别指定访问修饰符，默认的成员访问权限就是私有的。
+```C++
+class student{
+piblic: //公有成员
+	string name; //学生的名字
+private: //私有成员
+	int age; // 学生的年龄
+}
+```
+其中name是公有的，age是私有的。
+:::tip
+可以只有public而没有private，相当于结构体。
+:::
+```C++
+class student:
+{
+public://公有部分
+    void print_name();
+private://私有部分
+    void print_age()
+}
+void student :: print_name()
+    {cout<<"张三";}
+void student :: print_age()
+    {cout<<"20";}
+//以下是主函数
+student aa；
+aa.print_name();//调用公有方法，打印出张三
+aa.print_age();//调用私有方法，不允许！会报错
+```
+---
+**私有方法可以被使用，但是需要 通过公有方法的外壳调用私有方法**
+E.g:
+```C++
+class student:
+{public:
+    void print_age_public();
+private:
+    void print_age_private();
+}
+void student::print_age_public()
+    {print_age_private();}//重点：公有方法调用私有方法
+//私有成员数据也是一样，只能通过公有方法调用
+void student::print_age_private()
+    {cout<<"20";}
+```
+---
+### 1.3 成员函数
+#### 1.3.1 成员函数的重载
+和C语言普通函数一样，成员函数也可以重载；不同函数可以有相同的函数名，通过不同的输入参数来识别，如：
+```C++
+class student{
+public:
+	int age;
+	string name;
+	bool set(int a);//上下两个函数名字一样，但是输入的数据类型不一样
+	bool set(string a);}
+```
+
+### 1.4 构造函数
+直接使用语句`student aa`创建aa对象，那么aa这个时候又默认值吗？————如果有构造函数，那么aa就有默认值。  
+::: warning 为什么要构造函数?
+建立一个对象aa，要给他的年龄和姓名赋值，那就要写两行代码set("张三");set(20),使用构造函数后，即使你有再多的成员数据，都不用一一写了。
+:::
+构造函数的本质即对象初始化，构造函数的名字**必须**和类的名字一样
+```C++
+class student{
+public:
+	int age;
+	string name;
+	student();//这是构造函数，没有输入值和返回值，并且名字和类的名字一样
+	student(int a,string b);//同名的构造函数，即重载，带2个输入值
+}
+student :: student(){//构造函数定义，特点就是冒号两边是一样的，注意这个函数没有输入值
+	age=20;//构造函数里，可以给全部的成员数据赋值，赋的值是默认值
+	name="张三";
+}
+student :: student(int a,string b){//构造函数定义，特点就是冒号两边是一样的，注意这个函数有两个输入值
+	age=a;//构造函数里，可以给全部的成员数据赋值，赋的值是输入值
+	name=b;
+}
+//然后是主函数：
+student aa;//创建一个新student类的对象，名字为aa 不用再人工赋值 会自动调用构造函数给年龄和名字默认值
+student bb(25,"李四");//构造函数重载，新建一个student类的对象bb，同时动态输入名字和年龄*/
+```
+### 1.5 析构函数
+析构函数销毁内存数据：对象aa被创建后，其数据就一直存在内存中了，这块内存什么时候被释放？——使用析构函数的时候。
+:::warning 注意！
+主函数中并不能像申请指针内存空间一样直接运行 student aa;delete aa;
+:::
+只有student *p=new student(20,'张三')时，delete p才自动调用析构函数；写法和构造函数类似：
+```C++
+student :: ~student(){//析构函数名字比构造函数多一个波浪号，没有输入值，没有返回值
+	cout<<"delete object";}
+```
+### 1.6 常成员函数const
+- 只读取属性而不修改属性，即为常成员函数
+```C++
+class student{
+public:
+	int age;
+	string name;
+	bool set(int i);//这个就是成员函数的声明，又叫方法
+	bool read() const;//后面加了const，表示这个函数只读不写
+}
+bool student :: read() const{
+	cout<<age<<endl;
+	cout<<name<<endl;
+	return true;}
+student aa;
+aa.read()
+```
+实际上可以不使用const，普通方法也可以读数据，加const只是安全起见，防止意外修改数据。更加不正规的做法就是直接读取：aa.age（虽然但是真的很好用）
+
+### 1.7 静态成员static
+- 静态成员数据：一个类可创建多个对象，int a;int b;int c;int d;student类可以不停新建各种对象
+- 需要一个变量cnt=4来表示程序已经创建了4个对象，cnt这个数，与student类有关，但又不属于aa bb这些中任意一个对象。这种**描述全局，又与某个对象属性无关的**，叫做**静态成员数据**。
+- 读取静态成员数据的方法叫静态成员函数
+- 在类定义中加入静态成员数据，静态成员函数。
+```C++
+class student{
+public:
+	int age;
+	string name;
+	student(); //构造函数
+	static int cnt;//static表示静态成员数据，统计有多少个对象被创建。
+	static int count();//static表示静态成员数据，返回有多少个对象。
+}
+int student::cnt=0;
+student::student(){
+	age = 20;
+	name = "张三";
+	cnt++; //每次创建一个对象。cnt+1
+}
+int student ::count() //静态成员函数的定义！！注意！这里不写static了。
+{
+	return cnt; //返回静态成员数据，统计有多少个对象
+}
+// 使用静态成员函数；
+student aa;
+student bb;
+aa.count();//调用静态成员函数，返回2
+bb.count();//还是返回2，静态成员不依赖于某个对象
+student::count();//返回静态成员数据2
+```
+
+### 1.8 类的派生和继承
+#### 1.8.1 派生与继承
+什么是派生：把student类细分成本科生和研究生，是学生的子类，学生是父类，也称基类或超类，所谓派生是相对于父类而言的，所谓继承是相对于子类而言的。  
+
+```C++
+//派生出本科生的写法：
+class undergraduate : public student//本科生类定义 冒号后面表示从student类公有派生而来
+{
+public:
+    string course;//这行新增定义了一个公开的字符串属性course,比如本科生的大学物理课程
+}
+//派生出研究生的写法：
+class postgraduate : public student//研究生类定义，冒号后面表示从student类公有派生而来
+{
+public:
+    string research;//这行新增定义了一个公开的字符串属性research,比如研究生的研究方向
+}
+```
+对比这两个类：都没有写两个基本属性name和age，因为**根本不用写**，子类自动继承父类的属性和方法；除了共有的name和age，也有不同的东西，这是非常重要的类的派生特性，除了继承来的还可以有自己的属性和方法。子类没有构造函数，他的对象怎么被创建？name和age是否有值呢？————     
+`postgraduate bb;//创建研究生对象`此时子类无构造函数 系统将调用父类student的无参数的构造函数给name和age赋默认值，其默认值在之前小节中，也就是张三和20。   
+`bb.set(25);`postgraduate类本身没有set方法，这里调用了之前小节中父类student的方法，对age赋值。
+#### 1.8.2 类在不同情况下的继承
+:::tip Public Private Protect
+除了publc和private,还有一个和他们平级的关键字 protect  
+在没有派生继承的情况下，private与protect效果完全一样  
+但是protect可以被继承 而private不能被继承   
+:::
+
+### 1.9 多态
+- 核心思想：不同类的对象也可以使用相同的方法，这里的相同指的是相同的方法名字，而方法里面的内容具体是什么是不一样的。
+- 若要实现相同的函数名执行不同的内容，有三种方法：重载；隐藏；覆盖
+- 重载：两个函数的参数格式必须是不一样的，隐藏和覆盖的同名函数的参数可以一样，不依赖面向对象，依赖于编译器
+- 隐藏：在父类student和子类postgraduate中都定义一个函数study()，输入参数格式相同不同都可以。
+```C++
+class student
+{public
+    void study(bool a){cout<<"好好学习"};
+}
+class postgraduate :: public student
+{public:
+    void study(int b){cout<<"科研科研"};
+}
+//主函数：
+postgraduate bb;
+student aa;
+bb.study(2);//研究生对象调用研究生的study方法，参数为int，打印出科研科研
+aa.study(true);//学生对象调用学生的study方法，参数为bool，打印出好好学习
+bb.study(true);//报错，本来应该重载父类的方法，但父类方法被隐藏*/
+```
+### 1.10 类指针
+实际程序中，大量使用类指针，不考虑继承，类指针和结构体指针类似
+```C++
+student *p;
+student aa;
+p = &aa;//指针p指向aa对象
+p -> name;//指针p指向的对象aa的name属性，等价于aa.name
+p -> study();//相当于aa.study(),对aa执行成员函数
+//实际程序中的写法
+student *p = new student(20,"张三");//这里的new是动态分配内存，返回的是指针
+delete p; //调用析构函数
+```
+
+## 2.C++与C语言的部分不同
+### 2.1 头文件
+-   **C 语言**：标准库主要提供了一些基本的输入输出、字符串处理、数学运算等功能的函数。例如`<stdio.h>`、`<string.h>`、`<math.h>`等。
+-   **C++**：标准库不仅包含了 C 语言的标准库，还提供了更丰富的功能，如标准模板库（STL）。STL 包含了容器（如`vector`、`list`、`map`等）、算法（如`sort`、`find`等）和迭代器等，大大提高了开发效率。其中万能头文件`<bits/stdc++.h>`更是可以包含所有C++的库。 其中，vector等将在后文详细介绍。
+
+### 2.2 标准输入输出
+-   **C 语言**：主要使用标准输入输出函数，如`scanf`和`printf`。这些函数需要指定格式说明符，使用时需要注意数据类型的匹配。例如：
+```c
+#include <stdio.h>
+int main() {
+    int num;
+    printf("请输入一个整数: ");
+    scanf("%d", &num);
+    printf("你输入的整数是: %d\n", num);
+    return 0;
+}
+```
+-   **C++**：使用流对象`cin`和`cout`进行输入输出，它们会自动处理数据类型，使用起来更加方便。例如：
+
+```cpp
+#include <iostream>
+using namespace std;
+int main() {
+    int num;
+    cout << "请输入一个整数: ";
+    cin >> num;
+    cout << "你输入的整数是: " << num << endl;
+    return 0;
+}
+```
+
+### 2.3 申请内存
+-   **C 语言**：使用`malloc`、`calloc`、`realloc`和`free`函数进行动态内存分配和释放。例如：
+```c
+#include <stdio.h>
+#include <stdlib.h>
+int main() {
+    int *arr = (int *)malloc(5 * sizeof(int));
+    if (arr == NULL) {
+        printf("内存分配失败\n");
+        return 1;
+    }
+    // 使用数组
+    free(arr);  // 释放内存
+    return 0;
+}
+```
+-   **C++**：除了可以使用 C 语言的内存管理函数外，还引入了`new`和`delete`运算符进行动态内存分配和释放。`new`会自动调用对象的构造函数，`delete`会自动调用对象的析构函数。例如：
+```cpp
+#include <iostream>
+int main() {
+    int *arr = new int[5];
+    if (arr == nullptr) {
+        std::cout << "内存分配失败" << std::endl;
+        return 1;
+    }
+    // 使用数组
+    delete[] arr;  // 释放内存
+    return 0;
+}
+```
+### 2.4 函数重载
+-   **C 语言**：不支持函数重载，即不能定义同名但参数列表不同的函数。每个函数必须有唯一的名称。
+-  **C++**：支持函数重载，允许定义同名但参数列表不同的函数，编译器会根据调用时提供的参数类型和数量来选择合适的函数。在上文面向对象已经提及。
+
+### 2.5 异常处理
+-   **C 语言**：没有内置的异常处理机制，通常使用返回错误码的方式来处理错误。例如，函数返回特定的错误码表示出现了某种错误，调用者需要检查返回值来处理错误。
+-  **C++**：引入了异常处理机制，使用`try`、`catch`和`throw`关键字来处理异常。当程序出现异常时，可以使用`throw`抛出异常，在`try`块中捕获并处理异常。例如：
+```cpp
+#include <iostream>
+int divide(int a, int b) {
+    if (b == 0) {
+        throw "除数不能为零";
+    }
+    return a / b;
+}
+int main() {
+    try {
+        int result = divide(10, 0);
+        std::cout << "结果: " << result << std::endl;
+    } catch (const char* msg) {
+        std::cout << "异常: " << msg << std::endl;
+    }
+    return 0;
+}
+```
