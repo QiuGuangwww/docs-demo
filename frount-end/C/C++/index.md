@@ -2507,6 +2507,7 @@ public:
 ```
 
 ### 1.4 构造函数
+#### 1.4.1 基本构造函数
 直接使用语句`student aa`创建aa对象，那么aa这个时候又默认值吗？————如果有构造函数，那么aa就有默认值。  
 ::: warning 为什么要构造函数?
 建立一个对象aa，要给他的年龄和姓名赋值，那就要写两行代码set("张三");set(20),使用构造函数后，即使你有再多的成员数据，都不用一一写了。
@@ -2532,6 +2533,35 @@ student :: student(int a,string b){//构造函数定义，特点就是冒号两�
 student aa;//创建一个新student类的对象，名字为aa 不用再人工赋值 会自动调用构造函数给年龄和名字默认值
 student bb(25,"李四");//构造函数重载，新建一个student类的对象bb，同时动态输入名字和年龄*/
 ```
+#### 1.4.2 复制构造函数
+复制构造函数是一类特殊的构造函数，用于创建一个新对象，该对象是另一个已有对象的副本。
+- 复制构造函数的定义格式：
+```C++
+class student{
+public:
+	//复制构造函数
+	student(student &aa){
+		//复制对象的成员变量等操作
+	}
+};
+```
+其中，参数`student &aa`表示要复制的对象，通常用常量引用的形式（即`const student &aa`），以避免在传递参数时进行不必要的复制。  
+**作用**   
+- 对象初始化：当用一个已经存在的对象去初始化另一个同类型的新对象时，复制构造函数会被调用。例如`student bb(aa);`或`student bb=aa;`这两种方式都会调用复制构造函数来创建`bb`并将`aa`的值复制给`bb`。
+- 函数参数传递：当对象作为函数的参数按值传递时，会调用复制构造函数创建一个临时对象，将实参对象的值复制到临时对象中。
+- 函数返回值：当函数返回一个对象时，也会调用复制构造函数来创建一个临时对象，将函数内部的对象值复制到临时对象中返回给调用者。
+
+:::tip 补充
+• 以下3种情况都要调用复制构造函数：
+□ 当利用类的已有对象来初始化另一个新对象时，系统将自动调用复制构造函数.    
+□ 如果函数的形参是类对象，则在进行函数调用时(将实参传递给形参时)，将自动调用复制构造函数.     
+注意的是，如果函数的形参是类对象的指针或对象引用，则在函数调用时并不调用复制构造函数.      
+□ 如果函数的返回值是类对象，则在执行返回语句时将自动调用复制构造函数(返回类指针和引用时不调用复制构造函数).     
+:::
+
+#### 1.4.3 浅拷贝与深拷贝
+• 浅拷贝：默认的复制构造函数执行的是浅拷贝，它会逐个复制对象的成员变量。对于基本数据类型的成员变量，浅拷贝是合适的。但对于指针类型的成员变量，浅拷贝只是复制了指针的值，使得两个对象的指针指向同一块内存空间。这可能导致在对象销毁时，同一块内存被释放两次，引发错误。
+• 深拷贝：为了解决浅拷贝的问题，需要自定义复制构造函数来实现深拷贝。在深拷贝中，对于指针类型的成员变量，会在堆上重新分配一块内存空间，并将源对象中指针所指向的内容复制到新的内存空间中。这样，两个对象的指针就指向不同的内存空间，相互独立，避免了内存释放的问题。
 ### 1.5 析构函数
 析构函数销毁内存数据：对象aa被创建后，其数据就一直存在内存中了，这块内存什么时候被释放？——使用析构函数的时候。
 :::warning 注意！
@@ -2615,7 +2645,7 @@ public:
 `postgraduate bb;//创建研究生对象`此时子类无构造函数 系统将调用父类student的无参数的构造函数给name和age赋默认值，其默认值在之前小节中，也就是张三和20。   
 `bb.set(25);`postgraduate类本身没有set方法，这里调用了之前小节中父类student的方法，对age赋值。
 #### 1.8.2 类在不同情况下的继承
-:::tip Public Private Protect
+:::tip public private protect
 除了publc和private,还有一个和他们平级的关键字 protect  
 在没有派生继承的情况下，private与protect效果完全一样  
 但是protect可以被继承 而private不能被继承   
@@ -2642,7 +2672,90 @@ bb.study(2);//研究生对象调用研究生的study方法，参数为int，打�
 aa.study(true);//学生对象调用学生的study方法，参数为bool，打印出好好学习
 bb.study(true);//报错，本来应该重载父类的方法，但父类方法被隐藏*/
 ```
-### 1.10 类指针
+
+###  1.10 虚函数与抽象类
+#### 1.10.1 虚函数
+-  定义：在基类中使用`virtual`关键字生命的函数称为**虚函数**，它允许在派生类中重新定义该函数，以实现不同的行为。
+- 作用：实现多态，通过基类的**指针**或**引用调用虚函数**时，会根据对象的实际类型来决定调用哪个派生类的重写版本。
+```C++
+class Animal{
+public:
+	virtual void sound(){
+		cout<<“Animal makes a sound”<<endl;}
+	}
+};
+class Dog:public Animal{
+public:
+	void sound() override{//override是一个关键字，用于显式地表明派生类中的函数是对基类中虚函数的重写，增加代码可读性。
+		cout<<“Dog barks”<<endl;}
+	}
+};
+class Cat:public Animal {
+public:
+	void sound() override{
+		cout<<“Cat meows”<<endl;}
+	}
+};
+int main(){
+	Animal* animal11 = new Dog();
+	Animal* animal22 = new Cat();
+	animal11->sound();
+	animal22->sound();
+	delete animal11;
+	delete animal22;
+	return 0;
+}
+```
+#### 1.10.2 抽象类
+- 定义：包含纯虚函数的类被称为抽象类，纯虚函数是在声明时将函数体置为0的虚函数；如`victurl void function() = 0;`。
+- 作用：抽象类不能被实例化，它主要用于作为基类为派生类提供统一的接口和公共的行为规范，强制派生类实现纯虚函数，以保证多态性的正确实现。‘
+```C++
+class Shape {
+public:
+    virtual double area() = 0;
+    virtual double perimeter() = 0;
+};
+
+class Rectangle : public Shape {
+private:
+    double length;
+    double width;
+
+public:
+    Rectangle(double l, double w) : length(l), width(w) {}
+    double area() override {
+        return length * width;
+    }
+    double perimeter() override {
+        return 2 * (length + width);
+    }
+};
+class Circle : public Shape {
+private:
+    double radius;
+public:
+    Circle(double r) : radius(r) {}
+    double area() override {
+        return 3.14159 * radius * radius;
+    }
+    double perimeter() override {
+        return 2 * 3.14159 * radius;
+    }
+};
+int main() {
+    Shape* shape1 = new Rectangle(5.0, 3.0);
+    Shape* shape2 = new Circle(4.0);
+    std::cout << "Rectangle area: " << shape1->area() << std::endl;
+    std::cout << "Rectangle perimeter: " << shape1->perimeter() << std::endl;
+    std::cout << "Circle area: " << shape2->area() << std::endl;
+    std::cout << "Circle perimeter: " << shape2->perimeter() << std::endl;
+    delete shape1;
+    delete shape2;
+    return 0;
+}
+```
+
+### 1.11 类指针
 实际程序中，大量使用类指针，不考虑继承，类指针和结构体指针类似
 ```C++
 student *p;
