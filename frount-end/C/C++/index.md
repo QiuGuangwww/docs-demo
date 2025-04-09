@@ -2943,7 +2943,7 @@ Address addr1("1234 Maple Street"); // 创建一个Address对象
 cout << "Address 1: ";
 addr1.print();
 Address addr2(addr1); // 使用复制构造函数
-cout << "Address 2 (copied from Address 1): ";
+cout << "Address 2 (copied +om Address 1): ";
 addr2.print();
 addr2.set("5678 Oak Avenue"); // 重新设置addr2
 cout << "Address 2 (after setting new address): ";
@@ -3012,20 +3012,20 @@ public:
     }
     //输出地址函数（已完成）
     void print() { cout << m_data << endl; }
-    // 请完成复制构造函数
-    Address(const Address &other){
-        m_data = new char[strlen(other.m_data) + 1]; // 分配新的动态内存
-        strcpy(m_data, other.m_data); // 复制字符串
-    }
-    // 请完成析构函数
-    ~Address(){
-        delete[] m_data; // 释放动态内存
-    }
-    // 请完成比较地址是否相同的equal函数
-    bool equal(const Address &other) {
-        return strcmp(m_data, other.m_data) == 0; // 比较字符串是否相同
-    }
-};
+    // 请完成复制构造函数 // [!code focus]
+    Address(const Address &other){ // [!code focus]
+        m_data = new char[strlen(other.m_data) + 1]; // 分配新的动态内存 // [!code focus]
+        strcpy(m_data, other.m_data); // 复制字符串 // [!code focus]
+    } // [!code focus]
+    // 请完成析构函数 // [!code focus]
+    ~Address(){ // [!code focus]
+        delete[] m_data; // 释放动态内存 // [!code focus]
+    } // [!code focus]
+    // 请完成比较地址是否相同的equal函数 // [!code focus]
+    bool equal(const Address &other) { // [!code focus]
+        return strcmp(m_data, other.m_data) == 0; // 比较字符串是否相同 // [!code focus]
+    } // [!code focus]
+}; // [!code focus]
 int main() {
     // 测试Address类
     Address addr1("1234 Maple Street"); // 创建一个Address对象
@@ -3139,29 +3139,29 @@ private:
     Point leftBottom;  // 左下角坐标
     Point rightTop;   // 右上角坐标
     public:
-    // 有参数构造函数（无需考虑2坐标是否重合）
-    Rectangle(float x1, float y1, float x2, float y2) : leftBottom(x1, y1), rightTop(x2, y2) {}
-    // 计算矩形的面积area函数
-    float area(){
-        return (rightTop.getX() - leftBottom.getX()) * (rightTop.getY() - leftBottom.getY());
-    }
-    // 显示矩形的左下角和右上角坐标以及面积函数show函数 
-    void show() {
-        leftBottom.show();
-        cout<<",";
-        rightTop.show();
-        cout<<",Area="<< area() << endl;
-    }
-    //返回当前矩形与另一矩形中面积更大的 max函数
-    Rectangle max(Rectangle& rect){
-        if(area()>rect.area()){
-            return *this;
-        }else{
-            return rect;
-        }
-    }
+    // 有参数构造函数（无需考虑2坐标是否重合） // [!code focus]
+    Rectangle(float x1, float y1, float x2, float y2) : leftBottom(x1, y1), rightTop(x2, y2) {} // [!code focus]
+    // 计算矩形的面积area函数 // [!code focus]
+    float area(){ // [!code focus]
+        return (rightTop.getX() - leftBottom.getX()) * (rightTop.getY() - leftBottom.getY()); // [!code focus]
+    } // [!code focus]
+    // 显示矩形的左下角和右上角坐标以及面积函数show函数  // [!code focus]
+    void show() { // [!code focus]
+        leftBottom.show(); // [!code focus]
+        cout<<","; // [!code focus]
+        rightTop.show(); // [!code focus]
+        cout<<",Area="<< area() << endl; // [!code focus]
+    } // [!code focus]
+    //返回当前矩形与另一矩形中面积更大的 max函数 // [!code focus]
+    Rectangle max(Rectangle& rect){ // [!code focus]
+        if(area()>rect.area()){ // [!code focus]
+            return *this; // [!code focus]
+        }else{ // [!code focus]
+            return rect; // [!code focus]
+        } // [!code focus]
+    } // [!code focus]
 };
-int main() {
+int main() { 
     // 测试 Rectangle 类
     Rectangle rect1(-1.0, -5.0, 3.0, 2.0); // 创建矩形
     rect1.show();
@@ -3221,29 +3221,29 @@ Total Weight=8,Total Price=65
 using namespace std;
 class Product {
 public:
-    // 构造函数 
-    Product(double w,double p):weight(w),price(p){
-        totalWeight+=weight;
-        totalPrice+=price*weight;
-    }
-    // 析构函数
-    ~Product(){
-        totalWeight-=weight;
-        totalPrice-=price*weight;
-    }
-    //showTotals函数，显示总重量和总价格
-    static void showTotals(){
-        cout<<"Total Weight="<<totalWeight<<","<<"Total Price="<<totalPrice<<endl;
-    }
+    // 构造函数  // [!code focus]
+    Product(double w,double p):weight(w),price(p){ // [!code focus]
+        totalWeight+=weight; // [!code focus]
+        totalPrice+=price*weight; // [!code focus]
+    } // [!code focus]
+    // 析构函数 // [!code focus]
+    ~Product(){ // [!code focus]
+        totalWeight-=weight; // [!code focus]
+        totalPrice-=price*weight; // [!code focus]
+    } // [!code focus]
+    //showTotals函数，显示总重量和总价格 // [!code focus]
+    static void showTotals(){ // [!code focus]
+        cout<<"Total Weight="<<totalWeight<<","<<"Total Price="<<totalPrice<<endl; // [!code focus]
+    } // [!code focus]
 private:
     double weight; // 当前商品的重量
     double price;  // 当前商品的单价
-    // 补充静态数据成员：总重量和总价格
-    static double totalWeight;
-    static double totalPrice;
+    // 补充静态数据成员：总重量和总价格 // [!code focus]
+    static double totalWeight; // [!code focus]
+    static double totalPrice;  // [!code focus]
 };
-double Product::totalWeight=0;
-double Product::totalPrice=0;
+double Product::totalWeight=0;  // [!code focus]
+double Product::totalPrice=0; // [!code focus]
 int main() {
     Product item1(5.0, 10.0); // 商品1 重量是5.0，单价是10.0
     Product item2(3.0, 5.0);  // 商品2 重量是3.0，单价是5.0

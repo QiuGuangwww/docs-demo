@@ -20,9 +20,12 @@ hero:
 features:
   - title: 机器学习
     details: 窝不会啊
-  - title: 深度学习
+    link: /frount-end/机器学习
+  - title: 矩阵论与数值分析
     details: 进度为0%😭
+    link: /frount-end/矩阵论与数值分析
   - title: C/C++
     details: 太难🌶
+    link: /frount-end/C/C++
 ---
 
