@@ -2779,8 +2779,8 @@ int main() {
 ### 1.9 面向对象课后习题
 #### 1.9.1 类与对象
 ##### 1.设计并完成Complex类
-【问题描述】
 设计并完成Complex类，进行复数的四则运算。在主程序中测试这个类的函数。不要修改main函数。
+:::details 题目描述
 ```c++
 #include <iostream>
 using namespace std;
@@ -2816,6 +2816,15 @@ int main() { // 测试Complex类
 	result.show();
 }
 ```
+:::
+:::details 样例输出
+```txt
+4+2i
+2+6i
+11-2i
+-1+2i
+```
+:::
 :::details 题解
 ```C++
 #include <iostream>
@@ -2887,6 +2896,629 @@ int main() {   // 测试Complex类
     result.show();
     result = c1.divide(c2);// 除法
     result.show();
+}
+```
+:::
+##### 2.完成地址类Address
+地址类Address用于存储和操作地址。请实现该类，并在主函数中完成测试。不要修改main函数。
+:::details 题目描述
+```c++
+#include <iostream>
+#include <cstring> // 用于字符串操作
+using namespace std;
+class Address {
+private:
+	char *m_data; // 指向动态内存的地址字符串
+public:
+	// 普通构造函数（已完成）
+	Address(char *str = NULL) {
+		if (str != NULL) {
+		m_data = new char[strlen(str) + 1]; // 分配动态内存
+		strcpy(m_data, str); // 复制字符串
+		} else {
+			m_data = new char[1]; // 分配一个字符的空间
+			*m_data = '\0'; // 初始化为空字符串
+		}
+	}
+// 重新设置地址 （已完成）
+	void set(const char *str) {
+		delete[] m_data; // 释放原有内存
+		if (str != NULL) {
+			m_data = new char[strlen(str) + 1]; // 分配新的动态内存
+			strcpy(m_data, str); // 复制字符串
+		} else {
+			m_data = new char[1]; // 分配一个字符的空间
+			*m_data = '\0'; // 初始化为空字符串
+		}
+	}	
+//输出地址函数（已完成）
+void print() { cout << m_data << endl; }
+// 请完成复制构造函数
+// 请完成析构函数
+// 请完成比较地址是否相同的equal函数
+};
+int main() {
+// 测试Address类
+Address addr1("1234 Maple Street"); // 创建一个Address对象
+cout << "Address 1: ";
+addr1.print();
+Address addr2(addr1); // 使用复制构造函数
+cout << "Address 2 (copied from Address 1): ";
+addr2.print();
+addr2.set("5678 Oak Avenue"); // 重新设置addr2
+cout << "Address 2 (after setting new address): ";
+addr2.print();
+Address addr3; // 默认构造函数
+cout << "Address 3 (default constructor): ";
+addr3.print();
+addr3.set("1234 Maple Street"); // 设置地址
+cout << "Address 3 (after setting address): ";
+addr3.print();
+// 测试equal函数
+if (addr1.equal(addr3)) {
+cout << "Address 1 and Address 3 are the same." << endl;
+} else {
+cout << "Address 1 and Address 3 are different." << endl;
+}
+if (addr1.equal(addr2)) {
+cout << "Address 1 and Address 2 are the same." << endl;
+} else {
+cout << "Address 1 and Address 2 are different." << endl;
+}
+return 0;
+}
+```
+:::
+:::details 样例输出
+```TXT
+Address 1: 1234 Maple Street
+Address 2 (copied from Address 1): 1234 Maple Street
+Address 2 (after setting new address): 5678 Oak Avenue
+Address 3 (default constructor):
+Address 3 (after setting address): 1234 Maple Street
+Address 1 and Address 3 are the same.
+Address 1 and Address 2 are different.
+```
+:::
+:::details 题解
+```C++
+#include <iostream>
+#include <cstring> // 用于字符串操作
+using namespace std;
+class Address {
+private:
+    char *m_data; // 指向动态内存的地址字符串
+public:
+    // 普通构造函数（已完成）
+    Address(char *str = NULL) {
+        if (str != NULL) {
+            m_data = new char[strlen(str) + 1]; // 分配动态内存
+            strcpy(m_data, str); // 复制字符串
+        } else {
+            m_data = new char[1]; // 分配一个字符的空间
+            *m_data = '\0'; // 初始化为空字符串
+        }
+    }
+    // 重新设置地址 （已完成）
+    void set(const char *str) {
+        delete[] m_data; // 释放原有内存
+        if (str != NULL) {
+            m_data = new char[strlen(str) + 1]; // 分配新的动态内存
+            strcpy(m_data, str); // 复制字符串
+        } else {
+            m_data = new char[1]; // 分配一个字符的空间
+            *m_data = '\0'; // 初始化为空字符串
+        }
+    }
+    //输出地址函数（已完成）
+    void print() { cout << m_data << endl; }
+    // 请完成复制构造函数
+    Address(const Address &other){
+        m_data = new char[strlen(other.m_data) + 1]; // 分配新的动态内存
+        strcpy(m_data, other.m_data); // 复制字符串
+    }
+    // 请完成析构函数
+    ~Address(){
+        delete[] m_data; // 释放动态内存
+    }
+    // 请完成比较地址是否相同的equal函数
+    bool equal(const Address &other) {
+        return strcmp(m_data, other.m_data) == 0; // 比较字符串是否相同
+    }
+};
+int main() {
+    // 测试Address类
+    Address addr1("1234 Maple Street"); // 创建一个Address对象
+    cout << "Address 1: ";
+    addr1.print();
+    Address addr2(addr1); // 使用复制构造函数
+    cout << "Address 2 (copied from Address 1): ";
+    addr2.print();
+    addr2.set("5678 Oak Avenue"); // 重新设置addr2
+    cout << "Address 2 (after setting new address): ";
+    addr2.print();
+    Address addr3; // 默认构造函数
+    cout << "Address 3 (default constructor): ";
+    addr3.print();
+    addr3.set("1234 Maple Street"); // 设置地址
+    cout << "Address 3 (after setting address): ";
+    addr3.print();
+    // 测试equal函数
+    if (addr1.equal(addr3)) {
+        cout << "Address 1 and Address 3 are the same." << endl;
+    } else {
+        cout << "Address 1 and Address 3 are different." << endl;
+    }
+    if (addr1.equal(addr2)) {
+        cout << "Address 1 and Address 2 are the same." << endl;
+    } else {
+        cout << "Address 1 and Address 2 are different." << endl;
+    }
+    return 0;
+}
+```
+:::
+##### 3.根据已有的Point类，完成矩形Rectangle类
+根据矩形的左下角和右上角两点坐标可以确定一个矩形。请根据点Point类实现矩形类。只需完成Rectangle类，不要修改Point类与主函数。
+:::details 题目描述
+```c++
+#include <iostream>
+using namespace std;
+class Point {
+public:
+    // 有参数构造函数
+    Point(float x, float y) : x(x), y(y) {}
+    // 设置坐标
+    void set(float x, float y) {
+        this->x = x;
+        this->y = y;
+    }
+    // 显示坐标
+    void show() { cout << "(" << x << ", " << y << ")"; } 
+    float getX(){ return x; }
+    float getY(){ return y; }
+private:
+    float x; // x坐标
+    float y; // y坐标
+};
+class Rectangle {
+private:
+    Point leftBottom;  // 左下角坐标
+    Point rightTop;   // 右上角坐标
+    public:
+    // 有参数构造函数（无需考虑2坐标是否重合）
+    // 计算矩形的面积area函数
+    // 显示矩形的左下角和右上角坐标以及面积函数show函数
+    //返回当前矩形与另一矩形中面积更大的 max函数
+};
+int main() {
+    // 测试 Rectangle 类
+    Rectangle rect1(-1.0, -5.0, 3.0, 2.0); // 创建矩形
+    rect1.show();
+    Rectangle rect2(0.0, -3.0, 1.0, 7.0); // 创建矩形
+    rect2.show();
+    Rectangle rect3(2.0, 5.0, 3.0, 6.0); // 创建矩形
+    rect3.show();
+    cout<< "max: ";
+    rect1.max(rect2).max(rect3).show();//输出3个矩形中面积最大的
+    return 0;
+}
+```
+:::
+:::details 样例输出
+```txt
+(-1,-5),(3,2),Area=28
+(0,-3),(1,7),Area=10
+(2,5),(3,6),Area=1
+max: (-1,-5),(3,2),Area=28
+```
+:::
+:::details 题解
+```c++
+#include <iostream>
+using namespace std;
+class Point {
+public:
+    // 有参数构造函数
+    Point(float x, float y) : x(x), y(y) {}
+    // 设置坐标
+    void set(float x, float y) {
+        this->x = x;
+        this->y = y;
+    }
+    // 显示坐标
+    void show() { cout << "(" << x << "," << y << ")"; } 
+    float getX(){ return x; }
+    float getY(){ return y; }
+private:
+    float x; // x坐标
+    float y; // y坐标
+};
+class Rectangle {
+private:
+    Point leftBottom;  // 左下角坐标
+    Point rightTop;   // 右上角坐标
+    public:
+    // 有参数构造函数（无需考虑2坐标是否重合）
+    Rectangle(float x1, float y1, float x2, float y2) : leftBottom(x1, y1), rightTop(x2, y2) {}
+    // 计算矩形的面积area函数
+    float area(){
+        return (rightTop.getX() - leftBottom.getX()) * (rightTop.getY() - leftBottom.getY());
+    }
+    // 显示矩形的左下角和右上角坐标以及面积函数show函数 
+    void show() {
+        leftBottom.show();
+        cout<<",";
+        rightTop.show();
+        cout<<",Area="<< area() << endl;
+    }
+    //返回当前矩形与另一矩形中面积更大的 max函数
+    Rectangle max(Rectangle& rect){
+        if(area()>rect.area()){
+            return *this;
+        }else{
+            return rect;
+        }
+    }
+};
+int main() {
+    // 测试 Rectangle 类
+    Rectangle rect1(-1.0, -5.0, 3.0, 2.0); // 创建矩形
+    rect1.show();
+    Rectangle rect2(0.0, -3.0, 1.0, 7.0); // 创建矩形
+    rect2.show();
+    Rectangle rect3(2.0, 5.0, 3.0, 6.0); // 创建矩形
+    rect3.show();
+    cout<< "max: ";
+    rect1.max(rect2).max(rect3).show();//输出3个矩形中面积最大的
+    return 0;
+}
+```
+:::
+##### 4.完成商品Product类
+店铺记录商品，每种重量和单价各不相同。此外店铺需要记录当前库存商品的“总重量”和“总价值”。编写一个程序，通过定义“Product”类来模拟商店中商品的库存。
+(该作业练习使用静态数据成员。定义私有变量存储每件商品的单价和重量，使用静态数据成员存储商品的总重量和总价值；定义构造函数和析构函数。当一个新商品创建，在总重量和总价格中加上相应的重量和价格；反之，当商品被删除时，在总重量和总价格中减去相应的重量和价格。)    
+完成Product类，不要修改main函数。
+:::details 题目描述
+```C++
+#include <iostream>
+using namespace std;
+class Product {
+public:
+    // 构造函数 
+    // 析构函数
+    //showTotals函数，显示总重量和总价格
+private:
+    double weight; // 当前商品的重量
+    double price;  // 当前商品的单价
+    // 补充静态数据成员：总重量和总价格
+    ......
+};
+// 初始化静态数据成员
+......
+int main() {
+    Product item1(5.0, 10.0); // 商品1 重量是5.0，单价是10.0
+    Product item2(3.0, 5.0);  // 商品2 重量是3.0，单价是5.0
+    Product::showTotals(); // 显示总重量和总价格
+    Product * item3 = new Product(2.0, 8.0); // 商品3 重量是2.0，单价是8.0
+    Product::showTotals(); // 显示总重量和总价格
+    delete item3;        // 删除商品3 
+    Product::showTotals(); // 显示总重量和总价格
+    return 0;
+}
+```
+:::
+:::details 样例输出
+```txt
+Total Weight=8,Total Price=65
+Total Weight=10,Total Price=81
+Total Weight=8,Total Price=65
+```
+:::
+:::details 题解
+```C++
+#include <iostream>
+using namespace std;
+class Product {
+public:
+    // 构造函数 
+    Product(double w,double p):weight(w),price(p){
+        totalWeight+=weight;
+        totalPrice+=price*weight;
+    }
+    // 析构函数
+    ~Product(){
+        totalWeight-=weight;
+        totalPrice-=price*weight;
+    }
+    //showTotals函数，显示总重量和总价格
+    static void showTotals(){
+        cout<<"Total Weight="<<totalWeight<<","<<"Total Price="<<totalPrice<<endl;
+    }
+private:
+    double weight; // 当前商品的重量
+    double price;  // 当前商品的单价
+    // 补充静态数据成员：总重量和总价格
+    static double totalWeight;
+    static double totalPrice;
+};
+double Product::totalWeight=0;
+double Product::totalPrice=0;
+int main() {
+    Product item1(5.0, 10.0); // 商品1 重量是5.0，单价是10.0
+    Product item2(3.0, 5.0);  // 商品2 重量是3.0，单价是5.0
+    Product::showTotals(); // 显示总重量和总价格
+    Product * item3 = new Product(2.0, 8.0); // 商品3 重量是2.0，单价是8.0
+    Product::showTotals(); // 显示总重量和总价格
+    delete item3;        // 删除商品3 
+    Product::showTotals(); // 显示总重量和总价格
+    return 0;
+}
+```
+:::
+#### 1.9.2 继承
+##### 1.教室类
+根据房间Room类设计并完成教室ClassRoom类。
+ClassRoom类是Room类的公有派生类，具有seat属性，代表教室座位数。房间Room类与主函数定义如下。
+:::details 题目描述
+```C++
+#include <iostream>
+using namespace std;
+// 房间类
+class Room {
+  protected:
+   double length; // 房间的长度
+   double width;  // 房间的宽度
+  public:
+   // 构造函数
+   Room(double l, double w) : length(l), width(w) {}
+   // 计算房间面积
+   double area() const { return length * width; }
+   // 显示房间信息
+   void show() const {
+       cout << "Room dimensions: Length = " << length<< ", Width = " << width<< ", Area = " << area() << endl;
+   }
+};
+.....
+int main() {
+  ClassRoom cr(30, 12, 10); // 创建教室对象（长，宽，座位数）
+  cr.show(); // 显示教室信息
+  return 0;
+}
+```
+:::
+:::details 样例输出
+```txt
+Room dimensions: Length = 30, Width = 12, Area = 360
+Number of seats: 10, Average area per seat: 36
+```
+:::
+:::details 题解
+```C++
+#include <iostream>
+using namespace std;
+// 房间类
+class Room {
+protected:
+    double length; // 房间的长度
+    double width;  // 房间的宽度
+public:
+    // 构造函数
+    Room(double l, double w) : length(l), width(w) {}
+    // 计算房间面积
+    double area() const { return length * width; }
+    // 显示房间信息
+    void show() const {
+        cout << "Room dimensions: Length = " << length<< ", Width = " << width<< ", Area = " << area() << endl;
+    }
+};
+// 教室类
+class ClassRoom : public Room{
+protected:
+    int seat; // 座位数
+public:
+    // 构造函数
+    ClassRoom(double l, double w, int s) : Room(l, w), seat(s) {}
+    double personArea() const { return area() / seat; } // 每人占地面积
+    void show() const {
+        cout << "Room dimensions: Length = " << length<< ", Width = " << width<< ", Area = " << area() <<endl; 
+        cout<<"Number of seats: "<<seat<<", Average area per seat: "<<personArea()<<endl;}
+};
+int main() {
+    ClassRoom cr(30, 12, 10); // 创建教室对象（长，宽，座位数）
+    cr.show(); // 显示教室信息
+    return 0;
+}
+```
+:::
+##### 2.安全数组及派生类
+已有安全数组 MyArray类，该类使用固定大小的数组（容量固定）来存储整数。 该类提供安全的数组访问方法（设置、获取、显示），避免越界访问。
+请完成MyArray的2个公有派生类：AverArray类和RevArray类。
+（1）AverArray类定义了average函数，用于求数组元素的平均数。
+（2）RevArray类定义了reverse函数，用于数组元素的原地逆序。
+仔细阅读基类、主函数、输出，完成2个派生类。
+:::details 题目描述
+```C++
+#include <iostream>
+#include <cstdlib> // 用于调用exit函数
+using namespace std;
+const int MAX = 10;  // 定义数组的最大长度 
+// 基类：安全数组 
+class MyArray {
+protected:
+    int arr[MAX];   // 元素数组
+    int capacity;   // 数组容量
+public:
+    // 构造函数: 容量边界检测 
+    MyArray(int size) {
+	if (size <= MAX && size > 0) capacity = size;
+    else capacity = MAX;
+    for (int i = 0; i < capacity; ++i) 
+             arr[i] = 0;  //数组元素初始化 
+}
+    // 获取数组元素
+    int get(int index) const {
+        if (index < 0 || index >= capacity) {
+            cout << "Index out of range. Exiting program." << endl;
+            exit(1); // 越界时退出程序
+        }
+        return arr[index];
+    }
+    // 设置数组元素
+    void set(int index, int value) {
+        if (index < 0 || index >= capacity) {
+            cout << "Index out of range. Exiting program." << endl;
+            exit(1); // 越界时退出程序
+        }
+        arr[index] = value;
+    }
+    // 显示数组内容
+    void display() const {
+        for (int i = 0; i < capacity; ++i) {
+            cout << arr[i] << " ";
+        }
+        cout << endl;
+    }
+};
+// AverArray，求数组的平均值
+class AverArray : public MyArray {
+......
+}; 
+// RevArray，完成数组的原地逆序
+class RevArray : public MyArray {
+.....
+}; 
+int main() {
+    // 测试 AverArray
+    AverArray avgArray(5); // 创建一个容量为 5 的 AverArray 对象
+    avgArray.set(0, 11);   //设置0号元素  
+    avgArray.set(1, 20);   //设置1号元素 
+    cout << "AverArray elements: ";
+    avgArray.display();
+	cout << "Average: " << avgArray.average() << endl;
+    // 测试 RevArray
+    RevArray revArray(5); // 创建一个容量为 5 的 RevArray 对象
+    revArray.set(0, 1);
+    revArray.set(1, 2);
+    revArray.set(2, 3);
+    revArray.set(3, 4);
+    revArray.set(4, 5);
+    cout << "RevArray elements before reversing: ";
+	revArray.display();
+    revArray.reverse(); // 逆序数组
+    cout << "RevArray elements after reversing: ";
+    revArray.display();
+    return 0;
+}
+```
+:::
+:::details 样例输出
+```txt
+AverArray elements: 11 20 0 0 0
+Average: 6.2
+RevArray elements before reversing: 1 2 3 4 5
+RevArray elements after reversing: 5 4 3 2 1
+```
+:::
+:::details 题解
+```C++
+#include <iostream>
+#include <cstdlib> // 用于调用exit函数
+using namespace std;
+const int MAX = 10;  // 定义数组的最大长度 
+// 基类：安全数组 
+class MyArray {
+protected:
+    int arr[MAX];   // 元素数组
+    int capacity;   // 数组容量
+public:
+    // 构造函数: 容量边界检测 
+    MyArray(int size) {
+    if (size <= MAX && size > 0) capacity = size;
+    else capacity = MAX;
+    for (int i = 0; i < capacity; ++i) 
+             arr[i] = 0;  //数组元素初始化 
+}
+    // 获取数组元素
+    int get(int index) const {
+        if (index < 0 || index >= capacity) {
+            cout << "Index out of range. Exiting program." << endl;
+            exit(1); // 越界时退出程序
+        }
+        return arr[index];
+    }
+    // 设置数组元素
+    void set(int index, int value) {
+        if (index < 0 || index >= capacity) {
+            cout << "Index out of range. Exiting program." << endl;
+            exit(1); // 越界时退出程序
+        }
+        arr[index] = value;
+    }
+};
+// AverArray，求数组的平均值
+class AverArray : public MyArray {
+public:
+    // 构造函数：调用基类构造函数
+    AverArray(int size) : MyArray(size) {}
+    // 求数组平均值
+    double average() const {
+        double sum = 0;
+        for (int i = 0; i < capacity; ++i) {
+            sum += arr[i];
+        }
+        return sum / capacity;
+    }
+    // 重写显示函数，显示数组元素
+    void display() const {
+        for (int i = 0; i < capacity; ++i) {
+            cout << arr[i] << " ";
+        }
+        cout << endl;
+    }
+}; 
+// RevArray，完成数组的原地逆序
+class RevArray : public MyArray {
+public:
+    // 构造函数：调用基类构造函数
+    RevArray(int size) : MyArray(size) {}
+    // 逆序数组
+    void reverse() {
+        for (int i = 0; i < capacity / 2; ++i) {
+            int temp = arr[i];
+            arr[i] = arr[capacity - 1 - i];
+            arr[capacity - 1 - i] = temp;
+        }
+    }
+    // 重写显示函数，显示逆序后的数组
+    void display() const {
+        for (int i = 0; i < capacity; ++i) {
+            cout << arr[i] << " ";
+        }
+        cout << endl;
+    }
+}; 
+int main() {
+    // 测试 AverArray
+    AverArray avgArray(5); // 创建一个容量为 5 的 AverArray 对象
+    avgArray.set(0, 11);   //设置0号元素  
+    avgArray.set(1, 20);   //设置1号元素 
+    cout << "AverArray elements: ";
+    avgArray.display();
+    cout << "Average: " << avgArray.average() << endl;
+    // 测试 RevArray
+    RevArray revArray(5); // 创建一个容量为 5 的 RevArray 对象
+    revArray.set(0, 1);
+    revArray.set(1, 2);
+    revArray.set(2, 3);
+    revArray.set(3, 4);
+    revArray.set(4, 5);
+    cout << "RevArray elements before reversing: ";
+    revArray.display();
+    revArray.reverse(); // 逆序数组
+    cout << "RevArray elements after reversing: ";
+    revArray.display();
+    return 0;
 }
 ```
 :::
