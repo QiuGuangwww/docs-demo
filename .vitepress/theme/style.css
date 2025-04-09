@@ -176,4 +176,43 @@
   padding-top: 24px;
   border: none;
 }
+/* 优化 hero 部分的样式 */
+.VPHero {
+  padding: 100px 0;
+  text-align: center;
+}
 
+.VPHero .name {
+  font-size: 48px;
+  font-weight: bold;
+  color: #333;
+}
+
+.VPHero .text {
+  font-size: 24px;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.VPHero .tagline {
+  font-size: 18px;
+  color: #999;
+  margin-bottom: 40px;
+}
+
+/* 优化 features 部分的样式 */
+
+
+
+
+.VPFeature:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+
+
+.VPFeature .details {
+  font-size: 16px;
+  color: #666;
+}
