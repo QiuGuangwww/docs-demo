@@ -536,9 +536,9 @@ int main(){
 ```
 当我们运行这个程序后，发现$c$和$d$依然是1和2，说明它们的值并没有被成功的交换，因为我们只是把$c$和$d$的**值**传递给了形式参数$a$和$b$，$c$和$d$本身没有发生任何变化，即实参的值未发生改变，交换失败。那么如何交换成功呢？
 
-#### 3.4.2 函数的传址调用（可学完指针再来看）
+#### 3.4.2 函数的传址调用（C++）
 顾名思义，传址调用就是传递的**地址**，我们知道数据在计算机内是通过**内存空间**存储的，每个元素都有它的一块**地址**，我们将实参的地址传递给形参，那么随着形参的地址交换，不就可以成功的把实际参数的地址也交换了吗？——确实如此：
-```c
+```C++
 void swap(int &a,int &b){//&是取地址符，得到的是地址
 	int temp=a;a=b;b=temp;//交换a和b的值
 }
@@ -549,6 +549,9 @@ int main(){
 	return 0;
 }
 ```
+:::tip 注意
+上面这个程序在C中是错误的，因为C不支持引用，但是C++支持，所以C++中是可以的。
+:::
 可以发现输出结构确实变成了2和1，这就说明这个函数生效了。这就是函数的传址调用。
 
 ### 3.5 全局变量、局部变量以及其作用域
@@ -2426,154 +2429,249 @@ int main()
 ## C++
 C++是一门面向对象的语言，先从面向对象开始介绍。
 ## 1.面向对象
-### 1.1  类的基本概念
-#### 1.1.1 类的定义
--   **类定义**：类是一个模板，类似于结构体。用于创建对象。类中包含成员数据（属性）和成员函数（方法）。
+### 1.1  面向对象基本概念
+#### 1.1.1 类和对象
+-   **类（class）定义**：类是一个模板，类似于结构体。用于创建对象。类中包含成员数据（属性）和成员函数（方法）。
+- **对象（object）定义**：对象是类的实例化，通过对象可以访问类的成员。
     
--   **示例**：
+ **示例-定义一个简单的类**：
 ```C++
 class student {    //这个大括号中的叫类定义
     string name; // 学生的名字
     int age;     // 学生的年龄
 };
+int main(){
+	student stu1;//创建对象
+	stu1.name = “Alice”;//设置成员变量
+	stu1.age = 25;
+	return 0;
+}
 ```
-类名为student，类里的两个内容：年龄与名字叫做类的成员数据，或者叫属性。类比`int a=10`，10即为$a$的属性。到这里为止，和C语言中的结构体概念是一样的。  
-#### 1.1.2 如何使用一个类
-类被定义后，就创造类的对象，形式与其他类型变量一样。
-```C++
-student aa;//创建一个student类的对象，名字叫aa
-aa.age=20；//给aa的属性赋值，与结构体一样
-```
+类名为student，类里的两个内容：年龄与名字叫做类的成员数据，或者叫属性。类比`int a=10`，10即为$a$的属性。stu1即为student类的一个对象，通过` . `操作符访问类的成员
+#### 1.1.2 访问修饰符
+C++中有三种访问修饰符，用于控制成员的访问权限。
+- **public：** 成员可以被类外部访问。
+- **private：** 成员只能在类内部访问（默认情况下，类的成员是私有的）。
+- **protected：** 类似于private，但在继承（后文会提到）可以被子类访问。
 
-### 1.2 公有与私有的初步概念
-- 公有（public）：公有成员在类的内部和外部都能被访问。类的用户可以直接使用对象来访问这些公有成员。
-- 私有（private）：私有成员仅能在类的内部访问，也就是在类的成员函数里可以访问。类外部的代码，比如在`main`函数或者其他类的成员函数中，无法直接访问这些私有成员。在类定义中，如果没有特别指定访问修饰符，默认的成员访问权限就是私有的。
+**示例-使用访问修饰符**
 ```C++
-class student{
-piblic: //公有成员
-	string name; //学生的名字
-private: //私有成员
-	int age; // 学生的年龄
-}
-```
-其中name是公有的，age是私有的。
-:::tip
-可以只有public而没有private，相当于结构体。
-:::
-```C++
-class student:
-{
-public://公有部分
-    void print_name();
-private://私有部分
-    void print_age()
-}
-void student :: print_name()
-    {cout<<"张三";}
-void student :: print_age()
-    {cout<<"20";}
-//以下是主函数
-student aa；
-aa.print_name();//调用公有方法，打印出张三
-aa.print_age();//调用私有方法，不允许！会报错
-```
----
-**私有方法可以被使用，但是需要 通过公有方法的外壳调用私有方法**
-E.g:
-```C++
-class student:
-{public:
-    void print_age_public();
+class Person{
 private:
-    void print_age_private();
-}
-void student::print_age_public()
-    {print_age_private();}//重点：公有方法调用私有方法
-//私有成员数据也是一样，只能通过公有方法调用
-void student::print_age_private()
-    {cout<<"20";}
-```
----
-### 1.3 成员函数
-#### 1.3.1 成员函数的重载
-和C语言普通函数一样，成员函数也可以重载；不同函数可以有相同的函数名，通过不同的输入参数来识别，如：
-```C++
-class student{
-public:
+	string name; //私有成员
 	int age;
-	string name;
-	bool set(int a);//上下两个函数名字一样，但是输入的数据类型不一样
-	bool set(string a);}
-```
-
-### 1.4 构造函数
-#### 1.4.1 基本构造函数
-直接使用语句`student aa`创建aa对象，那么aa这个时候又默认值吗？————如果有构造函数，那么aa就有默认值。  
-::: warning 为什么要构造函数?
-建立一个对象aa，要给他的年龄和姓名赋值，那就要写两行代码set("张三");set(20),使用构造函数后，即使你有再多的成员数据，都不用一一写了。
-:::
-构造函数的本质即对象初始化，构造函数的名字**必须**和类的名字一样
-```C++
-class student{
 public:
-	int age;
-	string name;
-	student();//这是构造函数，没有输入值和返回值，并且名字和类的名字一样
-	student(int a,string b);//同名的构造函数，即重载，带2个输入值
-}
-student :: student(){//构造函数定义，特点就是冒号两边是一样的，注意这个函数没有输入值
-	age=20;//构造函数里，可以给全部的成员数据赋值，赋的值是默认值
-	name="张三";
-}
-student :: student(int a,string b){//构造函数定义，特点就是冒号两边是一样的，注意这个函数有两个输入值
-	age=a;//构造函数里，可以给全部的成员数据赋值，赋的值是输入值
-	name=b;
-}
-//然后是主函数：
-student aa;//创建一个新student类的对象，名字为aa 不用再人工赋值 会自动调用构造函数给年龄和名字默认值
-student bb(25,"李四");//构造函数重载，新建一个student类的对象bb，同时动态输入名字和年龄*/
-```
-#### 1.4.2 复制构造函数
-复制构造函数是一类特殊的构造函数，用于创建一个新对象，该对象是另一个已有对象的副本。
-- 复制构造函数的定义格式：
-```C++
-class student{
-public:
-	//复制构造函数
-	student(student &aa){
-		//复制对象的成员变量等操作
+	void setName(string n){ //公有函数，用于设置私有成员
+		name = n；
+	}
+	void setAge(int a){
+		if(a>=0) age = a;}
+	void introduce(){
+		cout<<“My name is ”<<name<<“ and I am “<<age<<“ years old.’<<endl;
 	}
 };
+int main(){
+	Person person1;
+	//person1.name = “Alice”; //错误！！ name是私有成员，无法直接访问// [!code error]
+	person1.setName(“Alice”);
+	person1.setAge(25);
+	person1.introduce();
+	return 0;
+}
 ```
-其中，参数`student &aa`表示要复制的对象，通常用常量引用的形式（即`const student &aa`），以避免在传递参数时进行不必要的复制。  
-**作用**   
-- 对象初始化：当用一个已经存在的对象去初始化另一个同类型的新对象时，复制构造函数会被调用。例如`student bb(aa);`或`student bb=aa;`这两种方式都会调用复制构造函数来创建`bb`并将`aa`的值复制给`bb`。
-- 函数参数传递：当对象作为函数的参数按值传递时，会调用复制构造函数创建一个临时对象，将实参对象的值复制到临时对象中。
-- 函数返回值：当函数返回一个对象时，也会调用复制构造函数来创建一个临时对象，将函数内部的对象值复制到临时对象中返回给调用者。
 
+### 1.2 封装
+封装是将数据和操作数据的函数绑定在一起，并通过访问控制数据不被随意修改的一种机制。     
+**封装的作用：**      
+- 隐藏实现细节，防止外部直接修改数据。  
+- 提供接口（如set和get函数）来安全地访问和修改数据。
+#### 1.2.1 构造函数
+在创建对象时自动调用，用于初始化对象。C++中有多种构造函数，用于不同的初始化场景：
+- 默认构造函数：无参数，对象创建时调用。
+- 带参构造函数：带参数，用于初始化成员。
+- 拷贝构造函数：用已有对象初始化新对象。
+- 移动构造函数（C++11）：转移资产所有权，提高效率。 
+
+**示例-多种构造函数**
+```C++
+class Person{
+private:
+	string name;
+	int* agrPtr; //动态分配内存
+public:
+	//默认构造函数		
+	Person():name(“Unknown”),agePtr(new int(0)){
+		cout <<“Default constructor”<<endl;
+	}
+	//带参构造函数
+	Person(string n,int a):name(n),age(new int(a)){
+		cout<<“Parameterized constructor”<<endl;
+	}
+	//拷贝构造函数
+	Person(constant Person& other):name(other,name),agePtr(new int(*other.agePtr)){
+		cout<<“Copy constuctor”<<endl;
+	}
+	//移动构造函数：使用不多，略
+	//析构函数
+	～Person(){
+		delete agePtr; //释放动态内存
+		cout<<“Destructor”<<endl;
+	}
+	void introduce(){
+		cout<<“Name: ”<<name<<“,Age: “<<*agePtr<<endl;
+	}
+};
+int main(){
+	Person p1;//默认
+	Person p2(“Alice”,25); //带参
+	Person p3 = p2; //拷贝
+	p3.introduce();
+	return 0;
+```
 :::tip 补充
-• 以下3种情况都要调用复制构造函数：
-□ 当利用类的已有对象来初始化另一个新对象时，系统将自动调用复制构造函数.    
-□ 如果函数的形参是类对象，则在进行函数调用时(将实参传递给形参时)，将自动调用复制构造函数.     
-注意的是，如果函数的形参是类对象的指针或对象引用，则在函数调用时并不调用复制构造函数.      
-□ 如果函数的返回值是类对象，则在执行返回语句时将自动调用复制构造函数(返回类指针和引用时不调用复制构造函数).     
+• 以下3种情况都要调用复制构造函数：     
+① 当利用类的已有对象来初始化另一个新对象时，系统将自动调用复制构造函数.     
+② 如果函数的形参是类对象，则在进行函数调用时(将实参传递给形参时)，将自动调用复制构造函数.      
+③ 需要注意的是，如果函数的形参是类对象的指针或对象引用，则在函数调用时并不调用复制构造函数.       
+④ 如果函数的返回值是类对象，则在执行返回语句时将自动调用复制构造函数(返回类指针和引用时不调用复制构造函数).      
 :::
-
-#### 1.4.3 浅拷贝与深拷贝
+**浅拷贝与深拷贝**    
 • 浅拷贝：默认的复制构造函数执行的是浅拷贝，它会逐个复制对象的成员变量。对于基本数据类型的成员变量，浅拷贝是合适的。但对于指针类型的成员变量，浅拷贝只是复制了指针的值，使得两个对象的指针指向同一块内存空间。这可能导致在对象销毁时，同一块内存被释放两次，引发错误。
 • 深拷贝：为了解决浅拷贝的问题，需要自定义复制构造函数来实现深拷贝。在深拷贝中，对于指针类型的成员变量，会在堆上重新分配一块内存空间，并将源对象中指针所指向的内容复制到新的内存空间中。这样，两个对象的指针就指向不同的内存空间，相互独立，避免了内存释放的问题。
-### 1.5 析构函数
-析构函数销毁内存数据：对象aa被创建后，其数据就一直存在内存中了，这块内存什么时候被释放？——使用析构函数的时候。
-:::warning 注意！
-主函数中并不能像申请指针内存空间一样直接运行 student aa;delete aa;
-:::
-只有student *p=new student(20,'张三')时，delete p才自动调用析构函数；写法和构造函数类似：
+
+#### 1.2.2 析构函数
+在对象销毁时自动调用，用于清理资源。   
+**示例-构造函数和析构函数** 
 ```C++
-student :: ~student(){//析构函数名字比构造函数多一个波浪号，没有输入值，没有返回值
-	cout<<"delete object";}
+class Person {
+private:
+    string name;
+    int age;
+public:
+    // 构造函数
+    Person(string n, int a) {
+        name = n;
+        age = a;
+        cout << "Person object created!" << endl;
+    }
+    // 析构函数
+    ~Person() {
+        cout << "Person object destroyed!" << endl;
+    }
+    void introduce() {
+        cout << "My name is " << name << " and I am " << age << " years old." << endl;
+    }
+};
+int main() {
+    Person person1("Alice", 25);  // 调用构造函数
+    person1.introduce();
+    return 0;  // person1 超出作用域，自动调用析构函数
+}
 ```
+---
+### 1.3 继承
+继承允许一个类（子类）继承另一个类（基类）的属性和方法，从而实现代码复用。
+#### 1.3.1 基本语法
+```C++
+class DerivedClass : public BaseClass{
+	//子类内容
+};
+```
+#### 1.3.2 单继承
+```C++
+class Person {
+protected:  // protected 允许子类访问
+    string name;
+    int age;
+public:
+    Person(string n, int a) : name(n), age(a) {}
+    void introduce() {
+        cout << "Name: " << name << ", Age: " << age << endl;
+    }
+};
+class Student : public Person {  // Student 继承 Person
+private:
+    int studentID;
+public:
+    Student(string n, int a, int id) : Person(n, a), studentID(id) {}
+    void showStudent() {
+        introduce();  // 调用基类的函数
+        cout << "Student ID: " << studentID << endl;
+    }
+};
+int main() {
+    Student student("Bob", 20, 12345);
+    student.showStudent();
+
+    return 0;
+}
+```
+- Student类继承了Person类的name和age，并添加了自己的studentID。
+- ：Person（n，a）是初始化列表，用于调用基类的构造函数。
+
+### 1.4 多态
+多胎允许使用基类指针或引用调用子类的方法。主要通过**虚函数**实现。
+#### 1.4.1 虚函数
+在基类中将函数声明为virtual，子类可以重写（override）它。   
+**示例-多态**  
+```C++
+class Person {
+protected:
+    string name;
+public:
+    Person(string n) : name(n) {}
+    virtual void speak() {  // 虚函数
+        cout << "I am a person named " << name << endl;
+    }
+    virtual ~Person() {}  // 虚析构函数，确保子类析构函数被调用
+};
+class Student : public Person {
+public:
+    Student(string n) : Person(n) {}
+    void speak() override {  // 重写基类的虚函数
+        cout << "I am a student named " << name << endl;
+    }
+};
+int main() {
+    Person* ptr;
+    Student student("Charlie");
+    ptr = &student;  // 基类指针指向子类对象
+    ptr->speak();    // 调用子类的 speak()
+    return 0;
+}
+```
+:::tip
+ 没有virtual，会调用基类的speak（），这叫静态绑定；有了virtual，实现动态绑定。
+:::
+
+
+
+### 1.5 其他重要概念
+#### 1.5.1 抽象类和纯虚函数
+- 纯虚函数：`virtual void func()=0;`，包含纯虚函数的类是抽象类，不能实例化。
+- 抽象类用于定义借口，子类必须实现纯虚函数。
+
+**示例-抽象类**
+```C++
+class Shape {
+public:
+    virtual void draw() = 0;  // 纯虚函数
+};
+class Circle : public Shape {
+public:
+    void draw() override {
+        cout << "Drawing a circle" << endl;
+    }
+};
+```
+#### 1.5.2 重载与重写
+- 重载：在同一作用域内，函数名相同但参数不同。
+- 重写：子类重新定义基类的虚函数。
 ### 1.6 常成员函数const
-- 只读取属性而不修改属性，即为常成员函数
+#### 1.6.1 const
+- 只读取属性而不修改属性，即为常成员函数  
+
+**示例-const成员**  
 ```C++
 class student{
 public:
@@ -2589,8 +2687,23 @@ bool student :: read() const{
 student aa;
 aa.read()
 ```
-实际上可以不使用const，普通方法也可以读数据，加const只是安全起见，防止意外修改数据。更加不正规的做法就是直接读取：aa.age（虽然但是真的很好用）
-
+实际上可以不使用const，普通方法也可以读数据，加const只是安全起见，防止意外修改数据。  
+#### 1.6.2 mutable
+mutable成员变量让变量即便是在const函数中也能修改。  
+**示例-mutable成员变量**   
+```C++
+class Person{
+private:
+	string name;
+	mutable int accessCount;
+public:
+	Person(string n):name(n),accessCount(0){}
+	string getName() const{
+		accessCount++;
+		return name;
+	}
+};
+```
 ### 1.7 静态成员static
 - 静态成员数据：一个类可创建多个对象，int a;int b;int c;int d;student类可以不停新建各种对象
 - 需要一个变量cnt=4来表示程序已经创建了4个对象，cnt这个数，与student类有关，但又不属于aa bb这些中任意一个对象。这种**描述全局，又与某个对象属性无关的**，叫做**静态成员数据**。
@@ -2623,151 +2736,160 @@ bb.count();//还是返回2，静态成员不依赖于某个对象
 student::count();//返回静态成员数据2
 ```
 
-### 1.8 类的派生和继承
-#### 1.8.1 派生与继承
-什么是派生：把student类细分成本科生和研究生，是学生的子类，学生是父类，也称基类或超类，所谓派生是相对于父类而言的，所谓继承是相对于子类而言的。  
-
+### 1.8 多态底层机制
+多态的核心是**动态绑定**，通过虚函数表实现。
+#### 1.8.1 虚函数表
+每个包含虚函数的类都有一个虚函数表，存储虚函数的地址。对象中有一个指向虚函数表的指针（vptr）。运行时根据vptr调用正确的函数。  
 ```C++
-//派生出本科生的写法：
-class undergraduate : public student//本科生类定义 冒号后面表示从student类公有派生而来
-{
-public:
-    string course;//这行新增定义了一个公开的字符串属性course,比如本科生的大学物理课程
-}
-//派生出研究生的写法：
-class postgraduate : public student//研究生类定义，冒号后面表示从student类公有派生而来
-{
-public:
-    string research;//这行新增定义了一个公开的字符串属性research,比如研究生的研究方向
+#include <iostream>  
+using namespace std;  
+class Base {  
+public:  
+	virtual void func() { cout << "Base func" << endl; }  
+};  
+class Derived : public Base {  
+public:  
+	void func() override { cout << "Derived func" << endl; }  
+};  
+int main() {  
+	Base* ptr = new Derived();  
+	ptr->func(); // 输出 "Derived func"  
+	delete ptr;  
+	return 0;  
 }
 ```
-对比这两个类：都没有写两个基本属性name和age，因为**根本不用写**，子类自动继承父类的属性和方法；除了共有的name和age，也有不同的东西，这是非常重要的类的派生特性，除了继承来的还可以有自己的属性和方法。子类没有构造函数，他的对象怎么被创建？name和age是否有值呢？————     
-`postgraduate bb;//创建研究生对象`此时子类无构造函数 系统将调用父类student的无参数的构造函数给name和age赋默认值，其默认值在之前小节中，也就是张三和20。   
-`bb.set(25);`postgraduate类本身没有set方法，这里调用了之前小节中父类student的方法，对age赋值。
-#### 1.8.2 类在不同情况下的继承
-:::tip public private protect
-除了publc和private,还有一个和他们平级的关键字 protect  
-在没有派生继承的情况下，private与protect效果完全一样  
-但是protect可以被继承 而private不能被继承   
+#### 1.8.2 虚析构函数
+- 如果基类析构函数不是虚函数，删除基类指针时不会调用子类析构函数。导致资源泄露。
+
+```C++
+class Base {  
+public:  
+	virtual ~Base() { cout << "Base destructor" << endl; }  
+};  
+class Derived : public Base {  
+public:  
+	~Derived() { cout << "Derived destructor" << endl; }  
+};  
+int main() {  
+	Base* ptr = new Derived();  
+	delete ptr; // 正确调用 Derived 和 Base 的析构函数  
+	return 0;  
+}
+```
+### 1.9 面向对象课后习题
+#### 1.9.1 类与对象
+##### 1.设计并完成Complex类
+【问题描述】
+设计并完成Complex类，进行复数的四则运算。在主程序中测试这个类的函数。不要修改main函数。
+```c++
+#include <iostream>
+using namespace std;
+class Complex {
+public:
+	// 无参数构造函数
+	// 有参构造函数
+	// 实现以下复数运算的成员函数
+	Complex add(Complex& other);
+	Complex subtract(Complex& other);
+	Complex multiply(Complex& other);
+	Complex divide(Complex& other); //注意除0错误，输出提示，返回(0,0).
+	// show函数已实现，输出复数 -5+3i，4-i 形式
+	void show() {
+	if (imag >= 0) cout << real << "+" << imag << "i"<<endl;
+	else cout << real << "-" << -imag << "i"<<endl;
+	}
+private:
+	double real; // 复数实部
+	double imag; // 复数虚部
+};
+int main() { // 测试Complex类
+	Complex c1(3, 4); // 创建复数 3+4i
+	Complex c2(1, -2); // 创建复数 1-2i
+	Complex result; // 创建复数 0-0i
+	result = c1.add(c2); // 加法
+	result.show();
+	result = c1.subtract(c2);// 减法
+	result.show();
+	result = c1.multiply(c2);// 乘法
+	result.show();
+	result = c1.divide(c2);// 除法
+	result.show();
+}
+```
+:::details 题解
+```C++
+#include <iostream>
+using namespace std;
+class Complex {
+public:
+    // 无参数构造函数 // [!code focus]
+    Complex(){};// [!code focus]
+    // 有参构造函数 // [!code focus]
+    Complex(double r, double i) {// [!code focus]
+        real = r;// [!code focus]
+        imag = i;// [!code focus]
+    }// [!code focus]
+    // 实现以下复数运算的成员函数
+    Complex add(Complex& other);
+    Complex subtract(Complex& other);
+    Complex multiply(Complex& other);
+    Complex divide(Complex& other); //注意除0错误，输出提示，返回(0,0).
+// show函数已实现，输出复数 -5+3i，4-i 形式
+    void show() {
+    if (imag >= 0) cout << real << "+" << imag << "i"<<endl;
+    else cout << real << "-" << -imag << "i"<<endl; 
+    }
+private:
+    double real;      // 复数实部
+    double imag;      // 复数虚部
+};
+// 复数加法 // [!code focus]
+Complex Complex::add(Complex& other){// [!code focus]
+    Complex result;// [!code focus]
+    result.real = this->real + other.real;// [!code focus]
+    result.imag = this->imag + other.imag;// [!code focus]
+    return result;// [!code focus]
+}// [!code focus]
+// 复数减法 // [!code focus]
+Complex Complex::subtract(Complex& other){// [!code focus]
+    Complex result;// [!code focus]
+    result.real = this->real - other.real;// [!code focus]
+    result.imag = this->imag - other.imag;// [!code focus]
+    return result;// [!code focus]
+}// [!code focus]
+// 复数乘法 // [!code focus]
+Complex Complex::multiply(Complex& other){// [!code focus]
+    Complex result;// [!code focus]
+    result.real = this->real * other.real - this->imag * other.imag;// [!code focus]
+    result.imag = this->real * other.imag + this->imag * other.real;// [!code focus]
+    return result;// [!code focus]
+}// [!code focus]
+// 复数除法 // [!code focus]
+Complex Complex::divide(Complex& other){// [!code focus]
+    Complex result;// [!code focus]
+    if (other.real == 0 && other.imag == 0) {// [!code focus]
+        return Complex(0, 0); // 返回(0,0)// [!code focus]
+    }// [!code focus]
+    double denominator = other.real * other.real + other.imag * other.imag;// [!code focus]
+    result.real = (this->real * other.real + this->imag * other.imag) / denominator;// [!code focus]
+    result.imag = (this->imag * other.real - this->real * other.imag) / denominator;// [!code focus]
+    return result;// [!code focus]
+}// [!code focus]
+int main() {   // 测试Complex类
+    Complex c1(3, 4);    // 创建复数 3+4i
+    Complex c2(1, -2);   // 创建复数 1-2i  
+    Complex result;     // 创建复数 0-0i 
+    result = c1.add(c2); // 加法
+    result.show();
+    result = c1.subtract(c2);// 减法
+    result.show();
+    result = c1.multiply(c2);// 乘法
+    result.show();
+    result = c1.divide(c2);// 除法
+    result.show();
+}
+```
 :::
-
-### 1.9 多态
-- 核心思想：不同类的对象也可以使用相同的方法，这里的相同指的是相同的方法名字，而方法里面的内容具体是什么是不一样的。
-- 若要实现相同的函数名执行不同的内容，有三种方法：重载；隐藏；覆盖
-- 重载：两个函数的参数格式必须是不一样的，隐藏和覆盖的同名函数的参数可以一样，不依赖面向对象，依赖于编译器
-- 隐藏：在父类student和子类postgraduate中都定义一个函数study()，输入参数格式相同不同都可以。
-```C++
-class student
-{public
-    void study(bool a){cout<<"好好学习"};
-}
-class postgraduate :: public student
-{public:
-    void study(int b){cout<<"科研科研"};
-}
-//主函数：
-postgraduate bb;
-student aa;
-bb.study(2);//研究生对象调用研究生的study方法，参数为int，打印出科研科研
-aa.study(true);//学生对象调用学生的study方法，参数为bool，打印出好好学习
-bb.study(true);//报错，本来应该重载父类的方法，但父类方法被隐藏*/
-```
-
-###  1.10 虚函数与抽象类
-#### 1.10.1 虚函数
--  定义：在基类中使用`virtual`关键字生命的函数称为**虚函数**，它允许在派生类中重新定义该函数，以实现不同的行为。
-- 作用：实现多态，通过基类的**指针**或**引用调用虚函数**时，会根据对象的实际类型来决定调用哪个派生类的重写版本。
-```C++
-class Animal{
-public:
-	virtual void sound(){
-		cout<<“Animal makes a sound”<<endl;}
-	}
-};
-class Dog:public Animal{
-public:
-	void sound() override{//override是一个关键字，用于显式地表明派生类中的函数是对基类中虚函数的重写，增加代码可读性。
-		cout<<“Dog barks”<<endl;}
-	}
-};
-class Cat:public Animal {
-public:
-	void sound() override{
-		cout<<“Cat meows”<<endl;}
-	}
-};
-int main(){
-	Animal* animal11 = new Dog();
-	Animal* animal22 = new Cat();
-	animal11->sound();
-	animal22->sound();
-	delete animal11;
-	delete animal22;
-	return 0;
-}
-```
-#### 1.10.2 抽象类
-- 定义：包含纯虚函数的类被称为抽象类，纯虚函数是在声明时将函数体置为0的虚函数；如`victurl void function() = 0;`。
-- 作用：抽象类不能被实例化，它主要用于作为基类为派生类提供统一的接口和公共的行为规范，强制派生类实现纯虚函数，以保证多态性的正确实现。‘
-```C++
-class Shape {
-public:
-    virtual double area() = 0;
-    virtual double perimeter() = 0;
-};
-
-class Rectangle : public Shape {
-private:
-    double length;
-    double width;
-
-public:
-    Rectangle(double l, double w) : length(l), width(w) {}
-    double area() override {
-        return length * width;
-    }
-    double perimeter() override {
-        return 2 * (length + width);
-    }
-};
-class Circle : public Shape {
-private:
-    double radius;
-public:
-    Circle(double r) : radius(r) {}
-    double area() override {
-        return 3.14159 * radius * radius;
-    }
-    double perimeter() override {
-        return 2 * 3.14159 * radius;
-    }
-};
-int main() {
-    Shape* shape1 = new Rectangle(5.0, 3.0);
-    Shape* shape2 = new Circle(4.0);
-    std::cout << "Rectangle area: " << shape1->area() << std::endl;
-    std::cout << "Rectangle perimeter: " << shape1->perimeter() << std::endl;
-    std::cout << "Circle area: " << shape2->area() << std::endl;
-    std::cout << "Circle perimeter: " << shape2->perimeter() << std::endl;
-    delete shape1;
-    delete shape2;
-    return 0;
-}
-```
-
-### 1.11 类指针
-实际程序中，大量使用类指针，不考虑继承，类指针和结构体指针类似
-```C++
-student *p;
-student aa;
-p = &aa;//指针p指向aa对象
-p -> name;//指针p指向的对象aa的name属性，等价于aa.name
-p -> study();//相当于aa.study(),对aa执行成员函数
-//实际程序中的写法
-student *p = new student(20,"张三");//这里的new是动态分配内存，返回的是指针
-delete p; //调用析构函数
-```
-
 ## 2.C++与C语言的部分不同
 ### 2.1 头文件
 -   **C 语言**：标准库主要提供了一些基本的输入输出、字符串处理、数学运算等功能的函数。例如`<stdio.h>`、`<string.h>`、`<math.h>`等。
@@ -2805,10 +2927,10 @@ int main() {
 #include <stdio.h>
 #include <stdlib.h>
 int main() {
-    int *arr = (int *)malloc(5 * sizeof(int));
-    if (arr == NULL) {
-        printf("内存分配失败\n");
-        return 1;
+    int *arr = (int *)malloc(5 * sizeof(int));// [!code focus]
+    if (arr == NULL) {// [!code focus]
+        printf("内存分配失败\n");// [!code focus]
+        return 1;// [!code focus]
     }
     // 使用数组
     free(arr);  // 释放内存
@@ -2854,3 +2976,75 @@ int main() {
     return 0;
 }
 ```
+### 2.6 引用
+回到我们的swap函数，虽然C语言也写过这样的函数，但是使用了指针看起来不太自然。而C++提供了引用，虽然在功能上弱于指针，但是减少了出错的可能性，提高了代码的可读性。
+```C++
+#include <iostream>
+using namespace std;
+void swap2(int &a,int &b){// [!code focus]
+	int t=a;a=b;b=t;// [!code focus]
+}
+```
+这就是传址调用，在C语言中我们已经介绍过，但是实际上，这是C++的功能。  
+可能会有人注意到为什么我们使用的是swap2，而不是swap作为函数名，这是因为在`<algorithm>`头文件中，提供了功能更为强大的`swap`函数。
+## 3.STL
+STL是Cpp中最为重要的一个库，也是和C语言最大的不同之一。包含了诸多在计算机科学领域里常用的基本数据结构和基本算法。为广大C++程序员们提供了一个可扩展的应用框架，高度体现了软件的可复用性。其中封装了很多好用的“容器”，包括：向量（vector）、双端队列（deque）、列表（list）、集合（set）、多重集合（multiset）、映射（map）和多重映射（multimap）。  
+
+###  3.1 六大组件简介
+#### 3.1.1 STL组件
+- Container(容器) 各种基本数据结构
+- Adapter(适配器) 可改变containers、Iterators或Function object接口的一种组件
+- Algorithm(算法) 各种基本算法如sort、search…等
+- Iterator(迭代器) 连接containers和algorithms
+- Function object(函数对象)
+- Allocator(分配器)
+#### 3.1.2 容器
+容器类是容纳、包含一组元素或元素集合的对象。     
+七种基本容器：  
+向量（vector）、双端队列（deque）、列表（list）、集合（set）、多重集合（multiset）、映射（map）和多重映射（multimap）  
+标准容器的成员绝大部分都具有共同的名称。
+容器可以通过其元素的存储方式分为两种：  
+- 序列式容器（Sequence containers）：其中每个元素均有固定位置——取决于插入时机和地点，和元素值无关。（vector、deque、list）  
+-  关联式容器（Associative containers）：元素位置取决于特定的排序准则以及元素值，和插入次序无关。（set、multiset、map、multimap）   
+
+
+#### 3.1.3 STL迭代器
+Iterator（迭代器）模式又称Cursor（游标）模式，用于提供一种方法顺序访问一个聚合对象中各个元素, 而又不需暴露该对象的内部表示。或者这样说可能更容易理解：Iterator模式是运用于聚合对象的一种模式，通过运用该模式，使得我们可以在不知道对象内部表示的情况下，按照一定顺序（由iterator提供的方法）访问聚合对象中的各个元素。  
+迭代器的作用：能够让迭代器与算法不干扰的相互发展，最后又能无间隙的粘合起来，重载了*，＋＋，＝＝，！＝，＝运算符。用以操作复杂的数据结构，容器提供迭代器，算法使用迭代器；常见的一些迭代器类型：iterator、const_iterator、reverse_iterator和const_reverse_iterator.
+
+#### 3.1.4 算法
+函数库对数据类型的选择对其可重用性起着至关重要的作用。举例来说，一个求方根的函数，在使用浮点数作为其参数类型的情况下的可重用性肯定比使用整型作为它的参数类性要高。而C++通过模板的机制允许推迟对某些类型的选择，直到真正想使用模板或者说对模板进行特化的时候，STL就利用了这一点提供了相当多的有用算法。它是在一个有效的框架中完成这些算法的——你可以将所有的类型划分为少数的几类，然后就可以在模版的参数中使用一种类型替换掉同一种类中的其他类型。   
+STL提供了大约100个实现算法的模版函数，比如算法for_each将为指定序列中的每一个元素调用指定的函数，stable_sort以你所指定的规则对序列进行稳定性排序等等。只要我们熟悉了STL之后，许多代码可以被大大的化简，只需要通过调用一两个算法模板，就可以完成所需要的功能并大大地提升效率。  
+算法部分主要由头文件`<algorithm>`，`<numeric>`和`<functional>`组成。   
+`<algorithm>`是所有STL头文件中最大的一个（尽管它很好理解），它是由一大堆模版函数组成的，可以认为每个函数在很大程度上都是独立的，其中常用到的功能范围涉及到比较、交换、查找、遍历操作、复制、修改、移除、反转、排序、合并等等。   
+`<numeric>`体积很小，只包括几个在序列上面进行简单数学运算的模板函数，包括加法和乘法在序列上的一些操作。  
+`<functional>`中则定义了一些模板类，用以声明函数对象。  
+STL中算法大致分为四类： 
+-   非可变序列算法：指不直接修改其所操作的容器内容的算法。
+-   可变序列算法：指可以修改它们所操作的容器内容的算法。
+-   排序算法：对序列进行排序和合并的算法、搜索算法以及有序序列上的集合操作。
+-   数值算法：对容器内容进行数值计算。  
+具体的算法将在后文详细介绍。
+
+### 3.2 【补充】String
+在C语言中，我们知道字符串是以 '\0' 结尾的一些字符的集合，而为了操作方便，C标准库中提供了一些str系列的库函数，但是这些库函数与字符串是分离开的，不太符合OOP（面向对象编程）的思想，而且底层空间需要用户自己进行管理，稍不留神可能还会导致越界访问。  
+而STL为了体现C++中的OOP的思想，设计了string这一容器，它将相关算法封装到string的内部，当用户定义string对象时可以直接调用相关算法。  
+当然，我们仍然可以使用字符数组，但是为了更简洁自然，string类型往往更好。例如：C++中的cin/cout可以直接读写string类型，却不能读写字符数组；string类型可以直接像整数类型一样相加，而在C语言中只能使用strcat函数。  
+【例】输入的数据每行包括若干个以空格隔开的整数，输出每行中所有整数的和。且此代码只能使用字符去处理。  
+```C++
+#include <iostream>
+#include <string>
+#include <sstream>
+using namespace std;
+int main(){
+	string line;
+	while(getline(cin,line)){
+		int sum = 0,x;
+		stringstream ss(line);
+		whlie (ss>>x) sum+=x;
+		cout<<sum<<"\n";
+	}
+	return 0;
+}
+```
+		
