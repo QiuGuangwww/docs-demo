@@ -96,7 +96,7 @@ const customElements = [
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
   markdown: {
-    mermaid:true,
+    mermaid: true,
     config: (md) => {
       md.use(mathjax3);
     },
@@ -131,6 +131,7 @@ export default defineConfig({
           { text: '复变函数与积分变换', link: '/frount-end/复变函数与积分变换' },
           { text: '矩阵论与数值分析', link: '/frount-end/矩阵论与数值分析' },
           { text: '高等数学', link: '/frount-end/高等数学' },
+          { text: '线性代数复习', link: '/frount-end/线性代数' },
           //{ text: '概率论与数理统计', link: '/frount-end/概率论与数理统计' }
         ]
       },
