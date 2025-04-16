@@ -265,7 +265,72 @@ $$ d \to link \to prev = d \to prev \to link = d$$
 ##### 2.优点
 从表的任意结点出发均可以找到表中的其他结点。
 ### 2.4 栈
-马上更新！！
+#### 2.4.1 栈的基本概念
+栈和队列是在程序设计中被广泛使用的两种线性数据结构。与线性表相比，它们的插入和删除操作受更多的约束和限定，故又被称为限定性的线性表结构。
+- **栈**: 限定仅只能在末端进行插入和删除的线性表。
+   - **栈顶**：允许插入和删除的一端。
+   - **栈底**：不允许插入和删除的一端。
+   - 时间有序表：先进后出（FILO）/后进先出（LIFO）
+- **栈的基本操作**
+    - `Clear()`——清空栈。
+    - `IsEmpty()`——判断栈是否为空。
+    - `Push(T item)`——将元素item放到栈的顶部。
+    - `Pop(T& item)`——取出栈顶部的元素。
+    - `Top(T& item)`——获取栈顶部的元素，但不删除该元素。
+    - `IsFull()`——判断栈是否已满。
+
+#### 2.4.2 栈的表示和实现
+##### 1.栈的顺序存储
+用连续的存储空间作为栈的元素的存储位置。为了表示栈顶的信息，引入了$top$这一变量。   
+- 初始的时候，$top$的值为$-1$。
+
+::: info 解释
+栈顶指针$top$，指向实际栈顶位置，初值为$-1$。
+:::
+**向栈中插入一个元素（进栈）**     
+不断的插入，不断的修改栈顶指针，$top=top+1$。最终达到栈满的状态。
+:::warning 注意
+显然，栈满后再添加元素是不合法的，于是我们在进栈过程中，需要考察栈是否是满的。若数组大小为$M$,当$top=M-1$，栈满时入栈，则上溢($overflow$)。
+:::
+**从栈中删除一个元素（出栈）**    
+从栈顶开始删除，$top = top-1$即可，直到$top=-1$（栈空）。
+:::warning 注意
+显然，栈空后再删除元素是不合法的，于是我们在出栈过程中，需要考察栈是否是空的，此时出栈，会出现**下溢**($underflow$)的情形。
+:::
+##### 2.栈的链式存储
+```C++
+template<class T>class Node{
+friend class LinkedStack<T>;
+private:
+	T data;
+	Node<T>* link;
+}
+```
+通常使用一个单向链表的表头这一端作为栈顶。    
+**链式栈的进栈操作**  
+```C++
+template<class T>
+LinkedStack<T>&LinkedStack<T>::Add(const T& x){
+	Node<T>*p=new Node<T>;
+	p->data=x;
+	p->link=top;
+	top = p;
+	return *this;
+}
+```
+**链式栈的退栈操作**    
+```C++
+template<class T>
+LinkedStack<T>&LinkedStack<T>::Del(T& x){
+	//栈不空时，返回栈顶值之后，栈顶指针退1
+	if(IsEmpty()){cout<<"no element";return *this;}
+	Node<T>*p=top;
+	x=p->data;
+	top=top->link;
+	delete p;
+	return *this;
+	}
+```
 ### 2.5 队列
 
 ### 2.6 字符串
