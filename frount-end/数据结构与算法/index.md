@@ -214,7 +214,7 @@ class LinkNode{
 ##### 2.查找操作
 **例** 取第3个元素
 ![imag](https://s21.ax1x.com/2025/04/13/pEWAhdK.png)
-从Zhao开始，$j=1,\bold p=L \to link$，依次向后，有$j=2,\bold p=\bold p \to link$与$j=3,\bold p=\bold p \to link$，循环三次，则所指的为要求的对象，即$e=\bold p \to data = Sun$
+从Zhao开始，$j=1,p=L \to link$，依次向后，有$j=2,p=p \to link$与$j=3,p=p \to link$，循环三次，则所指的为要求的对象，即$e=p \to data = Sun$
 - 时间复杂度：$O(n)$
 - 单链表查找数据没有顺序表方便，但是在数据删除与插入上会更加简单。
 ##### 3.插入操作
@@ -228,14 +228,128 @@ class LinkNode{
    - 方法①：$p \to link = p \to link \to link$（使$p$直接指向了$c$结点）
 :::warning 注意
 这种方法之下，$b$所占用的内存空间并没有被释放，这是一种**不安全**的删除方法。
-:::
-    - 方法②：$q = p \to link,p \to link = q \to link,delete \ q$
+:::  
+- 方法②：$q = p \to link,p \to link = q \to link,delete \ q$ 
 ##### 5.单链表优缺点
 - 优点：
    - 插入、删除方便
 - 缺点：
    - 不可随机存取表中任意数据元素
    - 不可直接获取线性表的长度
+##### 6.相关代码实现
+###### 1.基础定义
+- 1.类型和变量的说明
+
+:::code-group
+```C++
+struct Node{
+	int data;
+	Node* next;
+};
+Node *p;
+```
+```Python
+class Node:
+	def __init__(self,data=None):
+		self.data = data
+		self.next = None
+#先声明p为None，后续根据需要创建节点并赋值给p
+p = None
+#例如后面需要创建一个节点并让p指向它
+p = Node(10)
+```
+:::
+- 2.申请储存单元
+
+:::code-group
+```C++
+p = new Node; //动态申请、空间大小由指针变量的基类型决定
+```
+```Python
+#Python有自动的内存管理机制，无需像C++一样手动申请。
+```
+:::
+- 3.指针变量的赋值
+
+:::code-group
+```C++
+指针变量名 = NULL; //初始化，暂时不指向任何单元
+//后面使用‘->’具体赋值，例
+P ->data=0;
+```
+```Python
+#和上面一样先声明p为None，后续根据需要创建节点并赋值给p
+p = None
+#例如后面需要创建一个节点并让p指向它
+p = Node(10)
+```
+:::
+- 4.单链表的结构、建立、输出
+
+:::code-group
+```C++
+#include<bits\stdc++.h>
+using namespace std;
+struct Node{
+	int data;
+	Node* next;
+};
+Node *head,*p,*r; //r指向链表的最后一个结点（尾指针）
+int x;
+int main(){
+	cin>>x;
+	head=new Node; //申请头结点
+	r=head;
+	while(x!=-1){
+		p=new Node;
+		p->data=x;
+		p->next=NULL;
+		r->next=p; //把新结点链接到前面的链表中，实际上r是p的直接前驱。
+		r=p; //尾指针后移一个
+		cin>>x;
+	}
+	p=head->next; //头指针没有数据，只要从第一个结点开始即可
+	while(p->next!=NULL){
+		cout<<p->data<<" ";
+		p=p->next;
+	}
+	cout<<p->data<<endl; //最后一个结点的数据单独输出，也可以改用do-while
+	system("pause");
+}
+```
+```Python
+# 定义链表节点类
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
+# 初始化头节点
+head = Node(None)
+r = head
+# 读取输入数据并构建链表
+while True:
+    try:
+        x = int(input())
+        if x == -1:
+            break
+        p = Node(x)
+        r.next = p
+        r = p
+    except ValueError:
+        print("输入无效，请输入整数。")
+# 输出链表中的数据
+p = head.next
+if p:
+    # 先输出第一个节点的数据
+    print(p.data, end="")
+    p = p.next
+    # 输出剩余节点的数据
+    while p:
+        print(" ", p.data, end="", sep="")
+        p = p.next
+    print()    
+```
+:::
 #### 2.3.3 双链表
 ##### 1.定义
 不仅仅存储了一个元素的后继信息，还存储了前驱信息。
