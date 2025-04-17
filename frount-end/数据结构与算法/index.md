@@ -350,6 +350,141 @@ if p:
     print()    
 ```
 :::
+
+###### 2.操作
+- 1.查找“数据域满足一定条件的结点”
+
+:::code-group
+```C++
+p=head->next;
+while((p->data!=x)&&(p->next!=NULL)) p=p->next;
+//找到第一个就结束
+if(p->data==x)
+	//找到了就处理；
+else
+	//输出不存在;
+//如果想找到所有满足条件的结点，则修改如下：  // [!code highlight]
+p=head->next;
+whlie(p->next!=NULL){ //一个一个判断
+	if(p->data==x)
+		//找到一个处理一个；
+	p=p->next; //继续遍历
+}
+```
+```Python
+# 定义链表节点类
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
+# 定义链表类
+class LinkedList:
+    def __init__(self):
+        self.head = Node(None)
+    # 查找第一个满足条件的节点
+    def find_first(self, x):
+        p = self.head.next
+        while p and p.data != x:
+            p = p.next
+        if p and p.data == x:
+            print(f"找到了值为 {x} 的节点，进行处理")
+        else:
+            print(f"值为 {x} 的节点不存在")
+    # 查找所有满足条件的节点
+    def find_all(self, x):
+        p = self.head.next
+        while p:
+            if p.data == x:
+                print(f"找到了值为 {x} 的节点，进行处理")
+            p = p.next
+```
+:::
+- 2.取出单链表的第i个结点的数据域
+
+:::code-group
+```C++
+void get(Node* head,int i){
+	Node* p,int j;
+	p=head->next;
+	j=1;
+	while((p!=NULL)&&(j<i)){
+		p=p->next;
+		j=j+1;
+	}
+	if((p!=NULL)&&(j==i)) cout<<p->data;
+	else cout<<"i not exist!";
+}
+```
+```Python
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
+def get(head, i):
+    p = head.next
+    j = 1
+    while p is not None and j < i:
+        p = p.next
+        j = j + 1
+    if p is not None and j == i:
+        print(p.data)
+    else:
+        print("i not exist!")  
+```
+:::
+
+- 3.插入一个结点到单链表中去
+
+:::code-group
+```C++
+void insert(Node* head,int i,int x){
+	Node *p,*s;int j;
+	p=head;
+	j=0;
+	while((p!=NULL)&&(j<i-1)){ //寻找第i-1个结点，插在它的后面g
+		p=p->next;
+		j=j+1;
+	}
+	if(p==NULL) cout<<"no this position!";
+	else{
+		s=new Node;
+		s->data=x;
+		s->next=p->next;
+		p->mext=s;
+	}
+}	
+```
+```Python
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
+def get(head, i):
+    p = head.next
+    j = 1
+    while p is not None and j < i:
+        p = p.next
+        j = j + 1
+    if p is not None and j == i:
+        print(p.data)
+    else:
+        print("i not exist!")
+def insert(head, i, x):
+    p = head
+    j = 0
+    # 寻找第 i - 1 个结点，插在它的后面
+    while p is not None and j < i - 1:
+        p = p.next
+        j = j + 1
+    if p is None:
+        print("no this position!")
+    else:
+        s = Node(x)
+        s.next = p.next
+        p.next = s  
+```
+:::
+
 #### 2.3.3 双链表
 ##### 1.定义
 不仅仅存储了一个元素的后继信息，还存储了前驱信息。
