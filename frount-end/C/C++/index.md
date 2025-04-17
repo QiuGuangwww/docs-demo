@@ -3522,6 +3522,285 @@ int main() {
 }
 ```
 :::
+
+#### 1.9.3 多态
+##### 1.完成图形类Shape及其派生类
+图形类Shape派生出二维图形TwoDimensionalShape类与三维图形ThreeDimensionalShape类。图形可以调用print()完成输出；所有二维图形可以输出其面积；所有三维图形可以输出其体积。二维图形有圆Circle与正方形Square；三维图形有正立方体Cube。
+:::details 题目描述
+```C++
+# include <iostream>
+using namespace std;
+const double PI = 3.14;
+// 定义抽象基类 Shape
+class Shape{
+public:
+	virtual void print() = 0; // 纯虚函数，用于打印形状信息
+	virtual ~Shape(){} // 虚析构函数，确保派生类析构时能正确调用
+};
+// 定义二维形状类，继承自 Shape
+class TwoDimensionalShape: public Shape{
+public:
+	virtual double getArea() = 0; // 纯虚函数，用于获取二维形状的面积
+	void print(){// 实现打印函数
+		cout << "TwoDimensionalShape, area=" << getArea() << endl; // 打印面积
+	}
+};
+// 定义三维形状类，继承自 Shape
+class ThreeDimensionalShape: public Shape{
+public:
+	virtual double getVolume() = 0; // 纯虚函数，用于获取三维形状的体积
+	void print(){ // 实现打印函数
+		cout << "ThreeDimensionalShape, volume=" << getVolume() << endl; // 打印体积
+	}
+};
+......
+int main(){
+	Circle circle(1.5); // 创建一个半径为 1.5 的圆形对象
+	Cube cube(1.2); // 创建一个边长为 1.2 的立方体对象
+	Square square(2); // 创建一个边长为 2 的正方形对象
+	Shape *shape[3]; // 定义一个 Shape 类型的指针数组，用于存储不同形状对象的指针
+	shape[0] = &circle;
+	shape[1] = &cube;
+	shape[2] = &square;
+	for(int i = 0; i < 3; i++)
+		shape[i]->print(); // 调用每个形状对象的 print 函数
+	return 0; // 程序结束
+}
+```
+:::
+:::details 样例输出
+```txt
+TwoDimensionalShape, area=7.065
+ThreeDimensionalShape, volume=1.728
+TwoDimensionalShape, area=4
+```
+:::
+:::details 题解
+```C++
+# include <iostream>
+using namespace std;
+const double PI = 3.14;  
+// 定义抽象基类 Shape
+class Shape
+{ 
+public:
+    virtual void print() = 0; // 纯虚函数，用于打印形状信息
+    virtual ~Shape(){} // 虚析构函数，确保派生类析构时能正确调用
+};  
+// 定义二维形状类，继承自 Shape
+class TwoDimensionalShape: public Shape
+{
+public:
+    virtual double getArea() = 0; // 纯虚函数，用于获取二维形状的面积
+    void print() // 实现打印函数
+    {
+        cout << "TwoDimensionalShape, area=" << getArea() << endl; // 打印面积
+    }
+};
+// 定义三维形状类，继承自 Shape
+class ThreeDimensionalShape: public Shape
+{
+public:
+    virtual double getVolume() = 0; // 纯虚函数，用于获取三维形状的体积
+    void print() // 实现打印函数
+    {
+        cout << "ThreeDimensionalShape, volume=" << getVolume() << endl; // 打印体积
+    }
+};
+class Circle: public TwoDimensionalShape
+{
+private:
+    double radius; 
+public:
+    Circle(double r): radius(r) {} // 构造函数，初始化半径
+    double getArea() // 获取面积
+    {
+        return PI * radius * radius; // 计算圆的面积
+    }
+    void print() // 重写打印函数
+    {
+        cout << "TwoDimensionalShape"<<", area=" << getArea() << endl; // 打印圆的半径和面积
+    }
+};
+class Square: public TwoDimensionalShape
+{
+private:
+    double side; 
+public:
+    Square(double s): side(s) {} // 构造函数，初始化边长
+    double getArea() // 获取面积
+    {
+        return side * side; // 计算正方形的面积
+    }
+    void print() // 重写打印函数
+    {
+        cout << "TwoDimensionalShape" << ", area=" << getArea() << endl; // 打印正方形的边长和面积
+    }
+};
+class Cube: public ThreeDimensionalShape
+{
+private:
+    double side; 
+public:
+    Cube(double s): side(s) {} // 构造函数，初始化边长
+    double getVolume() // 获取体积
+    {
+        return side * side * side; // 计算立方体的体积
+    }
+    void print() // 重写打印函数
+    {
+        cout << "ThreeDimensionalShape, volume="<< getVolume() << endl; // 打印立方体的边长和体积
+    }
+};
+int main()
+{
+    Circle circle(1.5); // 创建一个半径为 1.5 的圆形对象
+    Cube cube(1.2);     // 创建一个边长为 1.2 的立方体对象
+    Square square(2);   // 创建一个边长为 2 的正方形对象
+    Shape *shape[3]; // 定义一个 Shape 类型的指针数组，用于存储不同形状对象的指针
+    shape[0] = &circle; 
+    shape[1] = &cube; 
+    shape[2] = &square; 
+    for(int i = 0; i < 3; i++) 
+        shape[i]->print(); // 调用每个形状对象的 print 函数
+    return 0; // 程序结束
+}
+```
+:::
+
+##### 2.完成图书馆类
+利用多态为“图书馆”设计一个图书管理程序。图书馆馆藏（Publication）可分为图书（Book）类和报纸（Newspaper）类。所有馆藏都应保存它们的名称。此外图书应保存图书的作者信息；杂志需要保存它的发行时间。图书馆有多部馆藏，可以添加馆藏，可以输出所有馆藏信息。
+:::details 题目描述
+```C++
+#include <iostream>
+#include <string.h>
+using namespace std;
+class Publication //出版物类
+{
+protected:
+	char name[20]; //出版物名称
+public:
+	Publication(char name[]){
+		strcpy(this->name,name);
+	}
+	virtual void show()=0;
+};
+class Book:public Publication //图书类
+{
+private:
+	char writer[20]; //作者名
+public:
+	......
+};
+class Newspaper:public Publication
+{
+private:
+	int year,month,day; //出版时间
+	......
+};
+class Library{ //图书馆类
+	Publication * publications[20]; //所有馆藏，假设馆藏上限为20
+	static int total; //实际馆藏数
+public:
+	void add(Publication & p) //添加新馆藏
+	{
+		publications[total++]=&p;
+	}
+	void show() //输出现有所有馆藏的相应信息
+	{
+		......
+	}
+};
+int Library::total=0;
+int main()
+{
+	Book a("C++","Nan Jiang"); //假设出版物名和作者名长度不超过19
+	Newspaper b("People's Daily",2024,1,1); //假设时间合法，不需要进行合法性检测
+	Library lib;
+	lib.add(a);
+	lib.add(b);
+	lib.show();
+	return 0;
+}
+```
+:::
+:::details 样例输出
+```txt
+Book:C++, auther:Nan Jiang
+Newspaper:People's Daily, 2024/1/1
+```
+:::
+:::details 题解
+```C++
+#include <iostream>
+#include <string.h>
+using namespace std;
+class Publication      //出版物类 
+{
+protected:
+    char name[20];    //出版物名称 
+public:
+    Publication(char name[])
+    {
+       strcpy(this->name,name);
+    }
+    virtual void show()=0;
+};
+class Book:public Publication   //图书类 
+{
+private:
+    char writer[20];    //作者名 
+public:
+    Book(char name[], char writer1[]) : Publication(name) {
+        strcpy(writer, writer1);
+    }
+    void show() override{
+        cout <<"Book:"<< this->name << ", auther:" << this->writer << endl;
+    }
+};
+class Newspaper:public Publication
+{
+private:
+    int year,month,day;     //出版时间 
+public:
+    Newspaper(char name[], int year, int month, int day) : Publication(name) {
+        this->year=year;
+        this->month=month;
+        this->day=day;
+    }
+    void show() override{
+        cout <<"Newspaper:"<< this->name << ", " << this->year << "/" << this->month << "/" << this->day << endl;
+    }
+};
+class Library{                     //图书馆类 
+    Publication * publications[20];  //所有馆藏，假设馆藏上限为20
+    static int total;                //实际馆藏数
+    public:
+    void add(Publication & p)      //添加新馆藏
+    {
+        publications[total++]=&p;
+    }
+    void show()                 //输出现有所有馆藏的相应信息
+    {
+        for(int i=0;i<total;i++)
+        {
+            publications[i]->show();}
+    }
+};
+int Library::total=0;
+int main()
+{
+   Book a("C++","Nan Jiang");               //假设出版物名和作者名长度不超过19
+   Newspaper b("People's Daily",2024,1,1);  //假设时间合法，不需要进行合法性检测
+   Library lib;
+   lib.add(a);
+   lib.add(b);
+   lib.show();
+   return 0;
+}
+```
+:::
+
 ## 2.C++与C语言的部分不同
 ### 2.1 头文件
 -   **C 语言**：标准库主要提供了一些基本的输入输出、字符串处理、数学运算等功能的函数。例如`<stdio.h>`、`<string.h>`、`<math.h>`等。
