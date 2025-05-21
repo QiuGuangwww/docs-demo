@@ -1,12 +1,12 @@
-# 算法与数据结构
+# 数据结构与算法
 ## 1.引言
 ### 1.1 什么是数据结构？
-——用计算机解决一个问题，通常需要以下几个步骤：         
+——用计算机解决一个问题，通常需要以下几个步骤：     
 ```mermaid
-graph LR
-A[从具体问题抽象出一个适当的数学模型] --> C[设计一个解决此问题的算法]
-C --> D[编出程序]
-D --> E[进行测试与调整直到得到答案]
+graph TB
+    A[从具体问题抽象出一个适当的数学模型] --> C[设计一个解决此问题的算法]
+    C --> D[编出程序]
+    D --> E[进行测试与调整直到得到答案]
 ```
 - 寻求数学模型的实质：分析问题，从中提取操作的对象，并找出这些操作对象之间含有的关系，然后用数学的语言加以描述。  
 - 很多问题最后都转化为求解数学方程或数学方程组。
@@ -148,24 +148,8 @@ $$(a_1,\dots,a_{i-1},a_i,\dots,a_n)$$
 #### 2.1.2 线性表的存储
 - 顺序存储——顺序表
 - 链式存储——链表
-#### 2.1.3 线性表的抽象数据类型
-抽象数据类型是指用以表示应用问题的数据模型以及定义在该模型上的一组操作。从抽象数据类型观点来看，一种数据结构即为一个抽象数据类型。一个抽象数据类型由数据部分和操作部分两方面来描述，数据部分描述数据元素和数据元素之间的关系。操作部分根据定义的抽象数据类型应用的需要来确定。  
-下面是线性表类的一个抽象数据类型说明：  
-```C++
-template <class T>
-class List{
-	void Clear();  //置空线性表
-	bool IsEmpty(); //线性表为空时，返回True
-	bool Append(const T value);  //在表尾添加元素value，表的长度增加1
-	bool Insert(const int p,const T value);  //在位置p插入元素value,表的长度增加1
-	bool Delete(const int p);  //删除位置p上的元素，表的长度减去1
-	bool GetValue(const int p,T& value); //把位置p的元素值修改为value
-	bool GetPos(int &p,const T value);  //把值为value的元素的位置返回到变量p中
-};
-```
-线性表的抽象数据类型并不是唯一的，要根据实际的应用来进行抽象。
 ### 2.2 顺序表
-#### 2.2.1 线性表的顺序存储及具体实现
+#### 2.2.1 线性表的顺序存储
 用一组地址连续的存储单元依次存储线性表的数据元素。设每个元素需要占用$l$个存储单元，$LOC(a_i)$表示元素$a_i$的存储地址，则$LOC(a_1)$是第一个数据元素$a_1$的存储地址，也是整个线性表的起始地址。
 $$
 LOC(a_{i+1})=LOC(a_i)+l
@@ -173,47 +157,6 @@ $$
 $$
 LOC(a_i)=LOC(a_1)+(i-1)l
 $$
-
-**顺序表有以下特点：**
-- 元素的数据类型是相同的
-- 元素顺序地存储在一片地址连续的存储空间中，一个元素按照存储顺序由唯一的索引值，又称为下标，可以随机存取表中的元素
-- 逻辑关系相邻的两个元素在物理位置上也相邻
-- 在程序中，数组变量说明语句一般使用常数作为向量长度，长度是静态常数。在程序执行时不变。
-
-以下是线性表的一种顺序实现：
-```C++
-template <class T> //线性表的元素类型为T
-class ArrayList : public List<T>{   //定义顺序表ArrayList
-public: //顺序表的运算集
-	ArrayList(const int size){ //创建顺序表，表长为最大长度
-		maxSize=size;
-		arrayList=new T[maxSize];
-		curLen=0;
-		position=0;
-	}
-	~ArrayList(){  //析构函数，消除ArrayList的实例
-		delete [] arrayList;
-	}
-	void clear(){  //清空顺序表
-		delete [] arrayList;
-		curLen=0;
-		position=0;
-		arrayList=new T[maxSize];
-	}
-	int Length();
-	bool Append(const T value); //在表尾添加元素value,表的长度增加1
-	bool Insert(const int p,const T value); //在位置p插入元素value，表的长度增加1
-	bool Delete(const int p); //删除位置p上的元素，表的长度减1
-	bool GetValue(const int p,const T value); //把位置p的元素值返回到变量value中
-	bool SetValue(const int p,const T value); //把位置p的元素值修改为value
-	bool GetPos(int &p,const T value); //把值为value的元素返回到变量p中
-private:
-	T *arrayList; //存储顺序表的实例
-	int maxSize; //顺序表实例的最大长度
-	int curLen; //顺序表实例的当前长度
-	int position; //当前处理位置
-};  
-```
 #### 2.2.2 算法：插入或插入新元素
 ##### 1.插入新元素
 **在第$i$个数据元素之前插入一个新的元素**  
@@ -226,26 +169,7 @@ private:
 $$ E_{is}=\sum_{i=1}^{n+1}p_i(n-i+1)$$
 设在任何位置插入元素等概率，即$p_i=\frac{1}{n+1}$    
 $$ E_{is}=\frac{1}{n+1}\sum_{i=1}^{n+1}(n-i+1)=\frac{n}{2}$$
-从而得到这个算法的时间复杂度为$O(n)$。  
-**具体实现**  
-```C++
-template <class T>  //顺序表元素类型为T
-bool ArrayList<T> :: Insert(const int p,const T value){
-	if(curLen>=maxSize){
-		cout<<"The List is overflow"<<endl;  //检查顺序表是否溢出
-		return false;
-	}
-	if(p<0 || p>curLen){
-		cout<<"Insertion point is illegal"<<endl;  //检查插入位置是否合法
-	}
-	for(int i=curLenli>p;i--){
-		arrayList[i]=arrayList[i-1]; //从表尾curLen-1处向后移动一个位置直到插入位置p
-	}
-	arrayList[p]=value; //位置p处插入新元素
-	curLen++； //表的实际长度增加1
-	return true;
-}
-```
+从而得到这个算法的时间复杂度为$O(n)$。
 ##### 2.删除元素
 **删除第$i$个数据元素**    
 - 思想：删除第$i$个数据元素。将第$i+1$到$n$个元素均向前移动一个位置。
@@ -257,68 +181,8 @@ bool ArrayList<T> :: Insert(const int p,const T value){
 $$ E_{dl}=\sum_{i=1}^{n}q_i(n-i)$$
 设删除任何位置的元素等概率，即$q_i=\frac{1}{n}$
 $$E_{dl}=\frac{1}{n}\sum_{i=1}^{n}(n-i)=\frac{n-1}{2}$$
-从而得到这个算法的时间复杂度为$O(n)$。  
-**具体实现**  
-```C++
-template <class T>
-bool ArrayList<T>::Delete(const int p){
-	if(curLen<=0){  //检查顺序表是否为空
-		cout<<"No element to delete"<<endl;
-		return false;
-	}
-	if(p<0 || p>curLen-1){  //检查删除位置的合法性
-		cout<<"Deletion is illegal"<<endl;
-		return false;
-	}
-	for(int i=p;i<curLen-1;i++){
-		arrayList[i]=arrayList[i+1];//从删除位置p开始每个元素向前移动一个位置直到表尾
-	}
-	curLen--;//表的实际长度减1
-	return true;
-}
-```
-##### 3.多维数组
-从逻辑结构上来看，多维数组可以认为是一维数组的扩充。事实上，我们也可以把==二维数组==看成一个**定长**的线性表，其每个元素也是一个定长的线性表。  
->[!Abstract] 二维数组不同的看法
->可以看成列向量形式的线性表，也可以看成行向量形式的线性表。
-
-以此类推，$n$维数组可以视为以$n-1$维数组为元素的向量。
->[!info] 多维数组的逻辑特征
->一个元素**可能**有多个直接前驱和多个直接后继。
----
-###### 数组顺序表的定义
-把数组中的元素按照逻辑次序存放在一组地址连续的存储单元的方式称为数组的顺序存储结构，采用这种存储结构的数组称为数组顺序表。由于内存单元是一维结构，而数组是多维结构，因此用一组连续存储单元存放数组的元素存在一个**次序**问题，所以对二维数组有两种顺序存储方式：==列优先顺序表==和==行优先顺序表==。
-
----
-###### 列优先顺序表
-以列为**主序**的数组顺序表，是将数组元素按照列向量排序，第$i+1$个列向量紧接在第$i$个列向量的后面，即按列优先，逐列顺序存储。
-
----
-###### 行优先顺序表
-以行为主序的数组顺序表，是将数组元素按照行向量排序，第$i+1$个行向量紧接在第$i$个行向量的后面，即按行优先，逐行顺序存储。
-
----
-###### 数组顺序表的定位公式
-对于数组，一旦规定了其维数和各维的长度，便可以为它分配存储空间。下面给出优先顺序表的定位公式：  
-假设每个元素占$l$个存储单元，则二维数组A中的任一元素$a_{ij}$的存储地址可以定义如下：
-$$
-LOC(a_{ij})=LOC(a_{00})+(b_2\times i+j)\times l
-$$
-- $LOC(a_{ij})$是$a_{ij}$的存储地址
-- $LOC(a_{00})$是$a_{00}$的存储地址，即二维数组$A$的起始存储地址，也称为基地址。
-- $b_2$是数组第二维的长度。
-
-同理，我们可以推出$n$维行优先顺序表的元素存储地址的计算公式如下：
-$$
-LOC(a_{j_1,j_2,\dots ,j_n})=LOC(a_{0,0,\dots ,0})+(b_2\times \dots \times b_n\times j_1+b_3\times \dots \times b_n\times j_2+\dots b_n\times j_{n-1}+j_n) 
-$$
-$$
-\Leftrightarrow LOC(a_{0,0,\dots ,0})+(\sum_{i=1}^{n-1}j_i\prod_{k=i+1}^{n}b_k+j_n)\times l
-$$
-$$
-\Leftrightarrow LOC(a_{0,0,\dots ,0})+\sum_{i=1}^{n} c_ij_i,其中c_n=l,c_{i-1}=b_i\times c_i,1<i\leq n
-$$
-##### 4.一些结论
+从而得到这个算法的时间复杂度为$O(n)$。
+##### 3.一些结论
 - 插入一个数据元素的时间复杂度为$O(n)$
 - 删除一个数据元素的时间复杂度为$O(n)$
 - 读取一个数据元素的时间复杂度为$O(1)$
@@ -335,8 +199,7 @@ $$
 用一组任意的存储单元存储线性表的数据元素。存储单元可以是连续的，也可以是不连续的。元素之间有两种关系：**前驱和后继**，如果只有后继，则为**单链表结构**，若两者都有，则为**双链表结构**。
 #### 2.3.2 单链表
 ##### 1.定义
->[!question] 结点
-> 两部分信息组成，存储数据元素信息的数据域（存放数据信息），存储直接后继存储位置信息的指针域（指向下一个数据单元）。
+**Define：结点：** 两部分信息组成，存储数据元素信息的数据域（存放数据信息），存储直接后继存储位置信息的指针域（指向下一个数据单元）。
 - **head:** 头指针，指向链表中第一个结点。
 - **tail：** 尾指针，标记单项链表的最后一个结点的位置。
 - **0：** 空指针，有时也表示为“NULL”或“Λ”。
@@ -351,7 +214,7 @@ class LinkNode{
 ##### 2.查找操作
 **例** 取第3个元素
 ![imag](https://s21.ax1x.com/2025/04/13/pEWAhdK.png)
-从Zhao开始，$j=1,\mathbf p=L \to link$，依次向后，有$j=2,\mathbf p=\mathbf p \to link$与$j=3,\mathbf p=\mathbf p \to link$，循环三次，则所指的为要求的对象，即$e=\mathbf p \to data = Sun$
+从Zhao开始，$j=1,p=L \to link$，依次向后，有$j=2,p=p \to link$与$j=3,p=p \to link$，循环三次，则所指的为要求的对象，即$e=p \to data = Sun$
 - 时间复杂度：$O(n)$
 - 单链表查找数据没有顺序表方便，但是在数据删除与插入上会更加简单。
 ##### 3.插入操作
@@ -363,15 +226,264 @@ class LinkNode{
 ![imag](https://s21.ax1x.com/2025/04/13/pEWAzFS.png)
 - 我们需要定义$b$结点的前驱
    - 方法①：$p \to link = p \to link \to link$（使$p$直接指向了$c$结点）
->[!warning] 注意
-> 这种方法之下，$b$所占用的内存空间并没有被释放，这是一种**不安全**的删除方法。
-    - 方法②：$q = p \to link,p \to link = q \to link,delete \ q$
+:::warning 注意
+这种方法之下，$b$所占用的内存空间并没有被释放，这是一种**不安全**的删除方法。
+:::  
+- 方法②：$q = p \to link,p \to link = q \to link,delete \ q$ 
 ##### 5.单链表优缺点
 - 优点：
    - 插入、删除方便
 - 缺点：
    - 不可随机存取表中任意数据元素
    - 不可直接获取线性表的长度
+##### 6.相关代码实现
+###### 1.基础定义
+- 1.类型和变量的说明
+
+:::code-group
+```C++
+struct Node{
+	int data;
+	Node* next;
+};
+Node *p;
+```
+```Python
+class Node:
+	def __init__(self,data=None):
+		self.data = data
+		self.next = None
+#先声明p为None，后续根据需要创建节点并赋值给p
+p = None
+#例如后面需要创建一个节点并让p指向它
+p = Node(10)
+```
+:::
+- 2.申请储存单元
+
+:::code-group
+```C++
+p = new Node; //动态申请、空间大小由指针变量的基类型决定
+```
+```Python
+#Python有自动的内存管理机制，无需像C++一样手动申请。
+```
+:::
+- 3.指针变量的赋值
+
+:::code-group
+```C++
+指针变量名 = NULL; //初始化，暂时不指向任何单元
+//后面使用‘->’具体赋值，例
+P ->data=0;
+```
+```Python
+#和上面一样先声明p为None，后续根据需要创建节点并赋值给p
+p = None
+#例如后面需要创建一个节点并让p指向它
+p = Node(10)
+```
+:::
+- 4.单链表的结构、建立、输出
+
+:::code-group
+```C++
+#include<bits\stdc++.h>
+using namespace std;
+struct Node{
+	int data;
+	Node* next;
+};
+Node *head,*p,*r; //r指向链表的最后一个结点（尾指针）
+int x;
+int main(){
+	cin>>x;
+	head=new Node; //申请头结点
+	r=head;
+	while(x!=-1){
+		p=new Node;
+		p->data=x;
+		p->next=NULL;
+		r->next=p; //把新结点链接到前面的链表中，实际上r是p的直接前驱。
+		r=p; //尾指针后移一个
+		cin>>x;
+	}
+	p=head->next; //头指针没有数据，只要从第一个结点开始即可
+	while(p->next!=NULL){
+		cout<<p->data<<" ";
+		p=p->next;
+	}
+	cout<<p->data<<endl; //最后一个结点的数据单独输出，也可以改用do-while
+	system("pause");
+}
+```
+```Python
+# 定义链表节点类
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
+# 初始化头节点
+head = Node(None)
+r = head
+# 读取输入数据并构建链表
+while True:
+    try:
+        x = int(input())
+        if x == -1:
+            break
+        p = Node(x)
+        r.next = p
+        r = p
+    except ValueError:
+        print("输入无效，请输入整数。")
+# 输出链表中的数据
+p = head.next
+if p:
+    # 先输出第一个节点的数据
+    print(p.data, end="")
+    p = p.next
+    # 输出剩余节点的数据
+    while p:
+        print(" ", p.data, end="", sep="")
+        p = p.next
+    print()    
+```
+:::
+
+###### 2.操作
+- 1.查找“数据域满足一定条件的结点”
+
+:::code-group
+```C++
+p=head->next;
+while((p->data!=x)&&(p->next!=NULL)) p=p->next;
+//找到第一个就结束
+if(p->data==x)
+	//找到了就处理；
+else
+	//输出不存在;
+//如果想找到所有满足条件的结点，则修改如下：  // [!code highlight]
+p=head->next;
+whlie(p->next!=NULL){ //一个一个判断
+	if(p->data==x)
+		//找到一个处理一个；
+	p=p->next; //继续遍历
+}
+```
+```Python
+# 定义链表节点类
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
+# 定义链表类
+class LinkedList:
+    def __init__(self):
+        self.head = Node(None)
+    # 查找第一个满足条件的节点
+    def find_first(self, x):
+        p = self.head.next
+        while p and p.data != x:
+            p = p.next
+        if p and p.data == x:
+            print(f"找到了值为 {x} 的节点，进行处理")
+        else:
+            print(f"值为 {x} 的节点不存在")
+    # 查找所有满足条件的节点
+    def find_all(self, x):
+        p = self.head.next
+        while p:
+            if p.data == x:
+                print(f"找到了值为 {x} 的节点，进行处理")
+            p = p.next
+```
+:::
+- 2.取出单链表的第i个结点的数据域
+
+:::code-group
+```C++
+void get(Node* head,int i){
+	Node* p,int j;
+	p=head->next;
+	j=1;
+	while((p!=NULL)&&(j<i)){
+		p=p->next;
+		j=j+1;
+	}
+	if((p!=NULL)&&(j==i)) cout<<p->data;
+	else cout<<"i not exist!";
+}
+```
+```Python
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
+def get(head, i):
+    p = head.next
+    j = 1
+    while p is not None and j < i:
+        p = p.next
+        j = j + 1
+    if p is not None and j == i:
+        print(p.data)
+    else:
+        print("i not exist!")  
+```
+:::
+
+- 3.插入一个结点到单链表中去
+
+:::code-group
+```C++
+void insert(Node* head,int i,int x){
+	Node *p,*s;int j;
+	p=head;
+	j=0;
+	while((p!=NULL)&&(j<i-1)){ //寻找第i-1个结点，插在它的后面g
+		p=p->next;
+		j=j+1;
+	}
+	if(p==NULL) cout<<"no this position!";
+	else{
+		s=new Node;
+		s->data=x;
+		s->next=p->next;
+		p->mext=s;
+	}
+}	
+```
+```Python
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
+def get(head, i):
+    p = head.next
+    j = 1
+    while p is not None and j < i:
+        p = p.next
+        j = j + 1
+    if p is not None and j == i:
+        print(p.data)
+    else:
+        print("i not exist!")
+def insert(head, i, x):
+    p = head
+    j = 0
+    # 寻找第 i - 1 个结点，插在它的后面
+    while p is not None and j < i - 1:
+        p = p.next
+        j = j + 1
+    if p is None:
+        print("no this position!")
+    else:
+        s = Node(x)
+        s.next = p.next
+        p.next = s  
+```
+:::
 
 #### 2.3.3 双链表
 ##### 1.定义
@@ -471,6 +583,7 @@ LinkedStack<T>&LinkedStack<T>::Del(T& x){
 ### 2.5 队列
 
 ### 2.6 字符串
+
 
 ## 6.排序
 ### 6.1 排序的基本概念
@@ -625,14 +738,14 @@ def binary_insertion_sort(arr):
     return arr
 ```
 :::
-#### 6.2.3 $Shell$排序
+#### 6.2.3 Shell排序
 **思想：** 先将序列转换为**若干个小序列**，在这些小序列内部进行插入排序。然后逐渐扩大小序列的规模，从而减少小序列的个数，使得待排序序列处于更加有序的状态。从而对整个序列进行排序。  
 **算法分析：**   
 - 不稳定
 - 空间代价：$O(1)$
 - 时间代价：$O(nlogn)到O(n^2)之间$ 
 ::: code-group
-```c
+
 ```C
 void shellSort(int arr[], int size) {
     int i, j, tmp, increment;
@@ -647,7 +760,7 @@ void shellSort(int arr[], int size) {
     }
 }
 ```
-```
+
 ```C++
 void shellSort(int *arr, int size)  
 {  
@@ -665,7 +778,6 @@ void shellSort(int *arr, int size)
 
 ```
 ```Python
-
 def shellSort(arr):
     size = len(arr)
     increment = size // 2

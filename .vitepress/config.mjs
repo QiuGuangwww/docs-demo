@@ -140,6 +140,7 @@ export default defineConfig({
           { text: 'C/C++', link: '/frount-end/C/C++' },
           { text: '数据结构与算法', link: '/frount-end/数据结构与算法' },
           { text: 'Python进阶', link: '/frount-end/Python进阶' },
+          {text: '数据结构作业', link: '/frount-end/数据结构作业'},
         ]
       }
     ],
